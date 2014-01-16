@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+<h1>Leaderboard</h1>
+<table>
+  <th>User</th>
+  <th>Score</th>
+  {% for i in items %}
+  <tr>
+    <td>{{i['name']}}</td>
+    <td>{{i['score']}}</td>
+  </tr>
+  {% endfor %}
+</table>
