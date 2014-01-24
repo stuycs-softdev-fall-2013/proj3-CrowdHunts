@@ -25,7 +25,7 @@ num_plays real
     conn.commit()
     conn.close()
 
-#add user
+#add user (for registering)
 #@params: username, password
 #@return: True
 def add_user(usernm, passwd):
@@ -55,6 +55,9 @@ def updt_pass(usernm, old_pass, new_pass):
     conn.close()
     return True
 
+#used for logging in
+#@param: username, password
+#@return: whether a registered account
 def is_valid_user(usernm,passwd):
     conn=sql.connect('crowdhunts.db')
     c=conn.cursor()
@@ -63,3 +66,29 @@ def is_valid_user(usernm,passwd):
     temp_user=c.fetchone()
     conn.close()
     return temp_user!=None
+
+#adding a geo_pic
+#@param: geolocation (lat long) and pic data (as blob)
+#@return: true
+def add_geo_pic(lati, longi, pic):
+    conn=sql.connect('crowdhunts.db')
+    c=conn.cursor()
+    temp=(lati,longi,pic)
+    c.execute("INSERT INTO geo_pic VALUES (?,?,?)",temp)
+    conn.commit()
+    conn.close()
+    return True
+
+#search for a geopic by location
+#@param: geoloc (lat long)
+#return: pic or None
+def pic_by_loc(lati,longi):
+    conn=sql.connect('crowdhunts.db')
+    c=conn.cursor()
+    temp=(lati,longi)
+    c.execute("SELECT * FROM geo_pic WHERE latitude=? AND longitude=?",temp)
+    tempdata=c.fetchone()
+    conn.close()
+    if tempdata==None:
+        return tempdata
+    return tempdata[2]
