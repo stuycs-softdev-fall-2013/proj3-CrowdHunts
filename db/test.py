@@ -19,11 +19,15 @@ username text,
 password text,
 total_dist real,
 avg_score real,
+high_score real,
 num_plays real
 )""")
     c.execute("CREATE TABLE geo_pic (latitude real, longitude real, image blob)")
     conn.commit()
     conn.close()
+
+
+# USERS STUFF----------
 
 #add user (for registering)
 #@params: username, password
@@ -55,7 +59,7 @@ def updt_pass(usernm, old_pass, new_pass):
     conn.close()
     return True
 
-#used for logging in
+#used for logging in, validating user
 #@param: username, password
 #@return: whether a registered account
 def is_valid_user(usernm,passwd):
@@ -66,6 +70,36 @@ def is_valid_user(usernm,passwd):
     temp_user=c.fetchone()
     conn.close()
     return temp_user!=None
+
+#add one game's stats
+#@params: username, total distance traveled, game score
+#@return: True
+def add_stats(usernm, dist, score):
+    conn=sql.connect('crowdhunts.db')
+    c=conn.cursor()
+    temp=(usernm,)
+    c.execute("SELECT * FROM users WHERE username=?",temp)
+    temp_data=c.fetchone()
+    new_user_data=(temp_data[0],temp_data[1],temp_data[2]+dist,(temp_data[3]*(temp_data[4]+1)+score)/(temp_data[4]+1),temp_data[4]+1)
+    c.execute("DELETE FROM users WHERE username=?", temp)
+    c.execute("INSERT INTO users VALUES (?,?,?,?,?)",new_user_data)
+    conn.commit()
+    conn.close()
+    return True
+
+#simply getting user data in a tuple
+#@params: username
+#@return: tuple with data, None is user doesn't exist
+def get_user(usernm):
+    conn=sql.connect('crowdhunts.db')
+    c=conn.cursor()
+    temp=(usernm,)
+    c.execute("SELECT * FROM users WHERE username=?", temp)
+    temp_data=c.fetchone()
+    return temp_data
+
+
+# GEO_PIC STUFF----------
 
 #adding a geo_pic
 #@param: geolocation (lat long) and pic data (as blob)
@@ -92,3 +126,5 @@ def pic_by_loc(lati,longi):
     if tempdata==None:
         return tempdata
     return tempdata[2]
+
+#
