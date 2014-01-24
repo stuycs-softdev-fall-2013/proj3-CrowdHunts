@@ -1,8 +1,12 @@
 {% extends "base.html" %}
-<h1>{{usern}}</h1>
+{% block content %}
+  {% include fb.html %}
+  <div class="fb-share-button" data-href="{{URL}}" data-type="button_count"></div>
+  <h1>{{usern}}</h1>
 
-<h2>Stats</h2>
-Speed: {{speed}}<br>
-Distance walked: {{distance}}<br>
-Drawing value: {{dvalue}}<br>
-<em>Score: {{score}}</em></br>
+  <h2>Stats</h2>
+  Speed: {{speed}}<br>
+  Distance walked: {{distance}}<br>
+  Drawing value: {{dvalue}}<br>
+  <em>Score: {{score}}</em></br>
+{% endblock content %}
