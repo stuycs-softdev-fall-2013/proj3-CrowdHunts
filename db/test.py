@@ -22,6 +22,7 @@ avg_score real,
 num_plays real
 )""")
     c.execute("CREATE TABLE geo_pic (latitude real, longitude real, image blob)")
+    conn.commit()
     conn.close()
 
 #add user
@@ -32,6 +33,7 @@ def add_user(usernm, passwd):
     c=conn.cursor()
     temp=(usernm,passwd)
     c.execute("INSERT INTO users VALUES (?,?,0,0,0)",temp)
+    conn.commit()
     conn.close()
     return True
 
@@ -49,5 +51,15 @@ def updt_pass(usernm, old_pass, new_pass):
         return False
     temp=(new_pass,usernm)
     c.execute("UPDATE users SET password=? WHERE username=?",temp)
+    conn.commit()
     conn.close()
     return True
+
+def is_valid_user(usernm,passwd):
+    conn=sql.connect('crowdhunts.db')
+    c=conn.cursor()
+    temp=(usernm,passwd)
+    c.execute("SELECT * FROM users WHERE username=? AND password=?",temp)
+    temp_user=c.fetchone()
+    conn.close()
+    return temp_user!=None
