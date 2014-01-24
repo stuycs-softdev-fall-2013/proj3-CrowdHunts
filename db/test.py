@@ -32,6 +32,7 @@ def add_user(usernm, passwd):
     c=conn.cursor()
     temp=(usernm,passwd)
     c.execute("INSERT INTO users VALUES (?,?,0,0,0)",temp)
+    conn.commit()
     conn.close()
     return True
 
@@ -49,5 +50,6 @@ def updt_pass(usernm, old_pass, new_pass):
         return False
     temp=(new_pass,usernm)
     c.execute("UPDATE users SET password=? WHERE username=?",temp)
+    conn.commit()
     conn.close()
     return True
