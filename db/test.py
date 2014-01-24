@@ -132,4 +132,16 @@ def pic_by_loc(lati,longi):
         return tempdata
     return tempdata[2]
 
-#
+#search by proximity, get all in a certain radius of a certain point. (not really radius, more like a square)
+#@params: center, "radius"
+#@return: a list of geo_pics that are in the vicinity
+def pics_in_prox(lati,longi,length):
+    conn=sql.connect('crowdhunts.db')
+    c=conn.cursor()
+    temp=(lati, length, longi, length)
+    templist=[]
+    for row in c.execute("SELECT * FROM geo_pic WHERE abs(latitude-?) < ? AND abs(longitude-?) < ?", temp):
+        templist.append(row)
+    conn.close()
+    return templist
+    
