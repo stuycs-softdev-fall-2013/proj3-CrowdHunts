@@ -17,16 +17,21 @@ def profile(usern):
     #db query
     return render_template('user.html', user=usern)
 
+# some streetview
+#SELECT image FROM geopic WHERE lat1 - constLat < .030 AND long1 - constLong < .030
+#
+#
+@app.route('/streetview')
+def streetview():
+
 # return the next clue in a user's hunt, 
 # should also increment user score
-@app.route('/game/next_clue')
-def nextloc():
+# /game/clue?lon=1place?=1
+@app.route('/game/clue')
+def clue():
+    
     pass
 
-# current user's current score
-@app.route('/game/score')
-def score():
-    pass
 
 # we should probably do the hashing in the database module, but until that's available:
 from werkzeug.security import generate_password_hash, check_password_hash
