@@ -47,13 +47,16 @@ def add_user(usernm, passwd):
 def updt_pass(usernm, old_pass, new_pass):
     conn=sql.connect('crowdhunts.db')
     c=conn.cursor()
-    temp=(usernm,generate_password_hash(old_pass))
-    c.execute("SELECT * FROM users WHERE username=? AND password=?",temp)
+    temp=(usernm,)
+    c.execute("SELECT * FROM users WHERE username=?",temp)
     temp_user=c.fetchone()
     if temp_user==None:
         conn.close()
         return False
-    temp=(new_pass,generate_password_hash(usernm))
+    if not check_password_hash(temp_user[1],old_pass):
+        conn.close()
+        return False
+    temp=(generate_password_hash(new_pass),usernm)
     c.execute("UPDATE users SET password=? WHERE username=?",temp)
     conn.commit()
     conn.close()
@@ -102,6 +105,18 @@ def get_user(usernm):
     c.execute("SELECT username, total_dist, avg_score, num_plays, high_score FROM users WHERE username=?", temp)
     temp_data=c.fetchone()
     return temp_data
+
+#list of users by high score
+#@params: none
+#@return: list of all users by high score
+def users_by_score():
+    conn=sql.connect('crowdhunts.db')
+    c=conn.cursor()
+    templist=[]
+    for row in c.execute("SELECT username FROM users ORDER BY high_score DESC"):
+        templist.append(row)
+    conn.close()
+    return templist
 
 
 # GEO_PIC STUFF----------
