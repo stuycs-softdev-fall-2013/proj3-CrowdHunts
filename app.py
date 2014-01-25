@@ -9,8 +9,8 @@ def index():
 
 @app.route('/leaderboard')
 def leaders():
-    #db query
-    return render_template('leaderboard.html')
+    leaders = db.users_by_score()
+    return render_template('leaderboard.html', leaders=leaders)
 
 # user profile page
 @app.route('/u/<usern>')
@@ -22,6 +22,7 @@ def profile(usern):
 # /streetview?lon=1&lat=1
 @app.route('/jax/streetview')
 def streetview():
+    require_login()
     lat = request.args.get('lat')
     lon = request.args.get('lon')
     if not (lat and lon):
@@ -31,8 +32,8 @@ def streetview():
 # return the next hunt goal
 # /game/clue?lon=1&lat=1
 @app.route('/jax/goal')
-@login_required(abort_on_fail=True)
 def clue():
+    require_login()
     lat = request.args.get('lat')
     lon = request.args.get('lon')
     if not (lat and lon):
@@ -45,8 +46,8 @@ def clue():
 ## latitude  = lat
 ## longitude = lon
 @app.route('/jax/addpic', methods=['POST'])
-@login_required(abort_on_fail=True)
 def save_geo_pic():
+    require_login()
     pic = request.json['pic']
     lat = request.json['lat']
     lon = request.json['lon']
@@ -85,21 +86,16 @@ def register():
             return redirect('/')
         else:
             return render_template('register.html', error='Username already exists')    
-    
-# decorator to require login
+
 # params: func = function to be wrapped
 # abort_on_fail = should abort when fails, defaults to False for redirect
-def require_login(func, abort_on_fail=False):
-    from functools import wraps
-    @wraps(func)
-    def checker(*args, **kwargs):
-        if 'usern' in session:
-            return func(*args, **kwargs)
-        if abort_on_fail:
-            abort(403)
-        else:
-            return redirect('/login')
-    return checker      
+def require_login():
+    if 'usern' in session:
+        abort(403)
+
+@app.errorhandler(403)
+def access_forbidden():
+    return redirect('/login')
 
 if __name__ == "__main__":
     app.debug = True

@@ -6,10 +6,10 @@
   <table>
     <th>User</th>
     <th>Score</th>
-    {% for i in items %}
+    {% for i in leaders %}
       <tr>
-	<td>{{i['name']}}</td>
-	<td>{{i['score']}}</td>
+	<td>{{i[0]}}</td>
+	<td>{{i[1]}}</td>
       </tr>
     {% endfor %}
   </table>
