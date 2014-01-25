@@ -1,4 +1,5 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, request, abort
+import test as db
 
 app = Flask(__name__)
 
@@ -17,24 +18,42 @@ def profile(usern):
     #db query
     return render_template('user.html', user=usern)
 
-# some streetview
-#SELECT image FROM geopic WHERE lat1 - constLat < .030 AND long1 - constLong < .030
-#
-#
-@app.route('/streetview')
+# return geopic
+# /streetview?lon=1&lat=1
+@app.route('/jax/streetview')
 def streetview():
+    lat = request.args.get('lat')
+    lon = request.args.get('lon')
+    if not (lat and lon):
+        abort(400)
+    return db.pic_by_loc(lat, lon)
 
-# return the next clue in a user's hunt, 
-# should also increment user score
-# /game/clue?lon=1place?=1
-@app.route('/game/clue')
+# return the next hunt goal
+# /game/clue?lon=1&lat=1
+@app.route('/jax/goal')
+@login_required(abort_on_fail=True)
 def clue():
-    
+    lat = request.args.get('lat')
+    lon = request.args.get('lon')
+    if not (lat and lon):
+        abort(400)
     pass
 
+# post a picture
+# POST details:
+## picture   = pic
+## latitude  = lat
+## longitude = lon
+@app.route('/jax/addpic', methods=['POST'])
+@login_required(abort_on_fail=True)
+def save_geo_pic():
+    pic = request.json['pic']
+    lat = request.json['lat']
+    lon = request.json['lon']
+    db.add_geo_pic(lat, lon, pic)
 
-# we should probably do the hashing in the database module, but until that's available:
-from werkzeug.security import generate_password_hash, check_password_hash
+### LOGIN FOLLOWS ###
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if 'usern' in session:
@@ -45,10 +64,12 @@ def login():
         # handle logging in / checking creds
         usern = request.form['usern']
         passw = request.form['passw']
-        dbpass = None
-        passw = check_password_hash(passw, dbpass)
+        if db.is_valid_user(usern, passw):
+            session['usern'] = usern
+            return redirect('/')
+        else:
+            return render_template('login.html', error='Username and password do not match')
 
-# ditto on the password hashing
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if 'usern' in session:
@@ -58,19 +79,27 @@ def register():
     else:
         usern = request.form['usern']
         passw = request.form['passw']
-        passw = generate_password_hash(passw)
+        if db.get_user(usern):
+            db.add_user(usern, passw)
+            session['usern'] = usern
+            return redirect('/')
+        else:
+            return render_template('register.html', error='Username already exists')    
     
-
-from functools import wraps
-def require_login(func):
+# decorator to require login
+# params: func = function to be wrapped
+# abort_on_fail = should abort when fails, defaults to False for redirect
+def require_login(func, abort_on_fail=False):
+    from functools import wraps
     @wraps(func)
     def checker(*args, **kwargs):
         if 'usern' in session:
             return func(*args, **kwargs)
-        return redirect('/login')
-    return checker
-        
-    
+        if abort_on_fail:
+            abort(403)
+        else:
+            return redirect('/login')
+    return checker      
 
 if __name__ == "__main__":
     app.debug = True
