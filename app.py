@@ -107,7 +107,7 @@ def register():
     else:
         usern = request.form['usern']
         passw = request.form['passw']
-        if db.get_user(usern) == None:
+        if db.get_user(usern):
             return render_template('register.html', error='Username already exists')    
         else:
             db.add_user(usern, passw)
