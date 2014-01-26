@@ -92,6 +92,12 @@ def login():
         else:
             return render_template('login.html', error='Username and password do not match')
 
+@app.route('/logout')
+def logout():
+    if 'usern' in session:
+        session.pop('usern')
+        return redirect('/')
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if 'usern' in session:
