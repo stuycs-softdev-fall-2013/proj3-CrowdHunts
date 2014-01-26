@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+  {{error}}
+  <h1>Register</h1>
+  <form method="POST">
+    <input type="text" name="usern" placeholder="Username"/>
+    <input type="password" name="passw" placeholder="Password"/>
+    <input type="submit"/>
+  </form>
+
+{% endblock content %}

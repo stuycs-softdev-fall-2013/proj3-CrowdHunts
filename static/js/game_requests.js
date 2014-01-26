@@ -2,18 +2,25 @@ var goalLon;
 var goalLat;
 var requests = function() {
     var goal = function() {
+	$("#goal").html('<i>Loading location...</i>')
 	navigator.geolocation.getCurrentPosition(function (p) {
+	    $("#goal").html('<i>Loading image...</i>')
             var req = $.ajax({
 		url:'/jax/goal',
                 data: {'lat':p.coords.latitude,
 		       'lon':p.coords.longitude}
             })
-	    console.log(req)
-	    req.done(function(p) {
-		var goalLon = p.lon
-		var goalLat = p.lat
-		var goalimage = p.pic
-		console.log(p)
+	    req.done(function(ret) {
+		if ('error' in ret) {
+		    $("#goal").text('Error: '+ ret.error)
+		} else {
+		    var goalLon = ret.lon
+		    var goalLat = ret.lat
+		    var goalimage = ret.pic
+
+		    $("#goal").html('<img src="data:image/png;base64,'+goalimage+'"/>')
+		    console.log(ret)
+		}
 	    })
         });
     }

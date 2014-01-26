@@ -1,4 +1,5 @@
 from flask import Flask, render_template, redirect, request, abort, jsonify, session
+from random import choice
 import test as db
 
 app = Flask(__name__)
@@ -54,9 +55,9 @@ def clue():
     # need better location searching
     res = db.pics_in_prox(lat, lon, .5)
     if len(res) > 0:
-        ret = {'lon':res['longitude'], 
-               'lat':res['latitude'],
-               'pic':res['image']}
+        ret = {'lat':choice(res)[0], 
+               'lon':choice(res)[1],
+               'pic':choice(res)[2]}
         return jsonify(**ret)
     return jsonify({'error':'Nothing nearby'})
 
