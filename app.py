@@ -81,7 +81,7 @@ def login():
     if 'usern' in session:
         return redirect('/')
     if request.method == 'GET':
-        return render_template('login.html')
+        return render_template('login.html',error="")
     else:
         # handle logging in / checking creds
         usern = request.form['usern']
@@ -97,7 +97,7 @@ def register():
     if 'usern' in session:
         return redirect('/')
     if request.method == 'GET':
-        return render_template('register.html')
+        return render_template('register.html',error="")
     else:
         usern = request.form['usern']
         passw = request.form['passw']
