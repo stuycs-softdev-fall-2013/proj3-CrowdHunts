@@ -18,7 +18,6 @@ var requests = function() {
 		    var goalLat = ret.lat
 		    var goalimage = ret.pic
 
-		    // this doesn't work 
 		    $("#goal").html('<img src="data:image/png;base64,'+goalimage+'"/>')
 		    console.log(ret)
 		}
