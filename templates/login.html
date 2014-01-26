@@ -1,10 +1,38 @@
-{% extends "base.html" %}
-{% block content %}
-{{error}}
-  <h1>Login</h1>
-  <form method="POST">
-    <input type="text" name="usern" placeholder="Username"/>
-    <input type="password" name="passw" placeholder="Password"/>
-    <input type="submit"/>
-  </form>
-{% endblock content %}
+<html lang="en">
+    {% extends "base.html" %}
+    {% block content %}
+  
+  <body>
+    <h1 class="col-sm-offset-2">Login</h1>
+    
+    
+    <form class="form-horizontal" role="form" method="POST">
+      <div class="form-group">
+        <label for="usern" class="col-sm-2 control-label">Username</label>
+        <div class="col-sm-3">
+          <input type="text" name="usern" class="form-control" placeholder="Username">
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="passw" class="col-sm-2 control-label">Password</label>
+        <div class="col-sm-3">
+          <input type="text" name="passw" class="form-control" placeholder="Password">
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+          <input type="submit" name="button" class="btn btn-default" value="Login"> 
+          <font color="#FF0000">{{error}}</font>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+          Don't have an account?<button type="button" class="btn btn-link"><a href="/register">Register here</a></button>
+        </div>
+      </div>
+    </form>
+   </body>
+    {% endblock content %} 
+</html>
