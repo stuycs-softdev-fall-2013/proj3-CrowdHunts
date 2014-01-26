@@ -2,6 +2,7 @@ from flask import Flask, render_template, redirect, request, abort, jsonify, ses
 import test as db
 
 app = Flask(__name__)
+app.secret_key = 'shh this is secret'
 
 @app.route('/')
 def index():
@@ -51,7 +52,13 @@ def clue():
     if not (lat and lon):
         abort(400)
     # need better location searching
-    return jsonify(**pics_in_prox(lat, lon, .5))
+    res = db.pics_in_prox(lat, lon, .5)
+    if len(res) > 0:
+        ret = {'lon':res['longitude'], 
+               'lat':res['latitude'],
+               'pic':res['image']}
+        return jsonify(**ret)
+    return jsonify({'error':'Nothing nearby'})
 
 # post a picture
 # POST details:
@@ -93,21 +100,22 @@ def register():
     else:
         usern = request.form['usern']
         passw = request.form['passw']
-        if db.get_user(usern):
+        if db.get_user(usern) == None:
+            return render_template('register.html', error='Username already exists')    
+        else:
             db.add_user(usern, passw)
             session['usern'] = usern
             return redirect('/')
-        else:
-            return render_template('register.html', error='Username already exists')    
 
-# params: func = function to be wrapped
-# abort_on_fail = should abort when fails, defaults to False for redirect
+# call if a login is required. 
 def require_login():
-    if 'usern' in session:
+    if not 'usern' in session:
         abort(403)
 
+
+# if access is denied, redirects to login
 @app.errorhandler(403)
-def access_forbidden():
+def access_forbidden(e):
     return redirect('/login')
 
 if __name__ == "__main__":

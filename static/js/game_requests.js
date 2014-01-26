@@ -3,15 +3,16 @@ var goalLat;
 var requests = function() {
     var goal = function() {
 	navigator.geolocation.getCurrentPosition(function (p) {
-            var req = $.get({
+            var req = $.ajax({
 		url:'/jax/goal',
                 data: {'lat':p.coords.latitude,
 		       'lon':p.coords.longitude}
             })
 	    console.log(req)
 	    req.done(function(p) {
-		goalLon = p.lon
-		goalLat = p.lat
+		var goalLon = p.lon
+		var goalLat = p.lat
+		var goalimage = p.pic
 		console.log(p)
 	    })
         });
