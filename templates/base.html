@@ -1,11 +1,12 @@
 <html>
-<head>
-  <script src="/static/js/jquery-2.1.0.min.js"/>
-</head>
+  <head>
+    <script src="/static/js/jquery-2.1.0.min.js"></script>
+    {% block js %}{% endblock js %}
+  </head>
   <body>
     {% block content %}
-    <h1>Roar goes the sealion</h1>
-    <i>Someone forgot to replace the content block</i>
+      <h1>Roar goes the sealion</h1>
+      <i>Someone forgot to replace the content block</i>
     {% endblock %}
   </body>
 </html>

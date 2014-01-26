@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block js %}
+  <script src="/static/js/game_requests.js"></script>
+{% endblock js %}
+{% block content %}
+  <div id="goal">
+  </div>
+  <a href="javascript:requests.goal()">get goal</a>
+{% endblock content %}

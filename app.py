@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request, abort
+from flask import Flask, render_template, redirect, request, abort, jsonify, session
 import test as db
 
 app = Flask(__name__)
@@ -18,6 +18,14 @@ def profile(usern):
     #db query
     return render_template('user.html', user=usern)
 
+@app.route('/play')
+def play():
+    require_login()
+    return render_template('game.html')
+
+
+### AJAX ###
+
 # return geopic
 # /streetview?lon=1&lat=1
 @app.route('/jax/streetview')
@@ -27,7 +35,11 @@ def streetview():
     lon = request.args.get('lon')
     if not (lat and lon):
         abort(400)
-    return db.pic_by_loc(lat, lon)
+    res = db.pic_by_loc(lat, lon)
+    ret = {'pic':res['image'],
+           'lat':res['latitude'],
+           'lon':res['longitude']}
+    return jsonify(**ret)
 
 # return the next hunt goal
 # /game/clue?lon=1&lat=1
@@ -38,7 +50,8 @@ def clue():
     lon = request.args.get('lon')
     if not (lat and lon):
         abort(400)
-    pass
+    # need better location searching
+    return jsonify(**pics_in_prox(lat, lon, .5))
 
 # post a picture
 # POST details:

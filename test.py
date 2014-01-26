@@ -143,9 +143,9 @@ def pic_by_loc(lati,longi):
     c.execute("SELECT * FROM geo_pic WHERE latitude=? AND longitude=?",temp)
     tempdata=c.fetchone()
     conn.close()
-    if tempdata==None:
-        return tempdata
-    return tempdata[2]
+    #    if tempdata==None:
+    return tempdata
+    #   return tempdata[2]
 
 #search by proximity, get all in a certain radius of a certain point. (not really radius, more like a square)
 #@params: center, "radius"
