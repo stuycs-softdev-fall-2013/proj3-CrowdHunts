@@ -24,7 +24,7 @@ def init_db():
     high_score real
     )""")
     c.execute("CREATE TABLE start (title text, desc text, lat real, lon real, panoid text, tourid int)")
-    c.execute("CREATE TABLE cmpnt (title text, desc text, lat real, lon real, panoid text, tourid int)")
+    c.execute("CREATE TABLE cmpnt (title text, desc text, lat real, lon real, panoid text, tourid int, index int)")
     c.execute("CREATE TABLE end   (title text, desc text, lat real, lon real, panoid text, tourid int)")
     c.execute("CREATE TABLE tours (username text, title text, desc text, tourid int)")
     conn.commit()
@@ -151,8 +151,8 @@ def add_tour(dic):
     conn.commit()
     for i in range(1,len(list_stops)-1):
          temp_stop=list_stops[i]
-         temp=(temp_stop[0],temp_stop[1],temp_stop[2],temp_stop[3],temp_stop[4],tourid)
-         c.execute("INSERT INTO cmpnt VALUES (?,?,?,?,?,?)",temp)
+         temp=(temp_stop[0],temp_stop[1],temp_stop[2],temp_stop[3],temp_stop[4],tourid, i)
+         c.execute("INSERT INTO cmpnt VALUES (?,?,?,?,?,?,?)",temp)
          conn.commit()
     temp_stop=list_stops[-1]
     temp=(temp_stop[0],temp_stop[1],temp_stop[2],temp_stop[3],temp_stop[4],tourid)
