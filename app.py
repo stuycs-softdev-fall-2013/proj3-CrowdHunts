@@ -48,7 +48,8 @@ def quest():
 # desc
 @app.route('/jax/new/start')
 def new_start():
-    session['new-meta'] = {'title':title, 'desc':desc}
+    session['new-meta'] = {'title':title, 'desc':desc, 
+                           'usern':session['usern']}
     session['new-tour'] = []
 
 # POST keys:
