@@ -17,7 +17,7 @@ function main() {
 	glob = sv;
 
 	navigatorLoop();
-	$('#test')[0].innerHTML = window.orientation;
+	//$('#test')[0].innerHTML = window.orientation;
 	/*canvas.mousemove(function(e) {
 		console.log(e);
 		sv.setPov(-1 * e.offsetX / 10,e.offsetY/10,1)
@@ -47,38 +47,60 @@ function process(oldV,newV) {
 	return out;
 }
 
-var ax = 0;
-var ay = 0;
-var az = 0;
+function rotation(oldAngles,gyro) {
+	var a = gyro.alpha
+	var b = gyro.beta
+	var g = gyro.gamma
+
+	var r = oldAngles.roll
+	var p = oldAngles.pitch
+	var y = oldAngles.yaw
+
+	var newR = r *Math.cos(a) * Math.cos(b) + p * (Math.cos(a) * Math.sin(b) * Math.sin(g) - Math.sin(a) * Math.cos(g)) + y *(Math.cos(a) * Math.sin(b) * Math.cos(g) + Math.sin(a) * Math.sin(g))
+	var newP = r *Math.sin(a) * Math.cos(b) + p * (Math.sin(a) * Math.sin(b) * Math.sin(g) + Math.cos(a) * Math.cos(g)) + y *(Math.sin(a) * Math.sin(b) * Math.cos(g) - Math.cos(a) * Math.sin(g))
+	var newY = r * -Math.sin(b) + p * (Math.cos(b) * Math.sin(g) ) + y *(Math.cos(b) * Math.cos(g));
+	return {roll:newR,pitch:newP,yaw:newY}
+}
+
+var ax = 1;
+var ay = 1;
+var az = 1;
+window.addEventListener("deviceorientation", function() {
+	$("#test")[0].innerHTML = "zebra" + event.beta + "<br /> " + event.alpha + "<br />" + event.gamma
+	var mode = -2 * (event.gamma < -90) + 1
+	glob.setPov(event.webkitCompassHeading,mode*(event.beta - 90),1);
+},true);
+
+window.addEventListener("devicemotion", function() {
+	var e = event.accelerationIncludingGravity
+	//$("#test")[0].innerHTML = "ax: " + e.x + "<br /> ay: " + e.y + "<br /> az: " + e.z
+},true);
+/*
  window.addEventListener('devicemotion', function () {
         //$('#test')[0].innerHTML = " " + event.acceleration.x * 2 + " " + event.acceleration.y * 2;
 		var landscapeOrientation = window.innerWidth/window.innerHeight > 1;
+	var e = event.accelerationIncludingGravity
+
+
+
 
 		e = event.accelerationIncludingGravity;
+		b = event.acceleration;
+		r = event.rotationRate;
 		var weight = 2;
-		ax = e.x//process(ax,e.x * 5);
-		ay = process(ay,e.y * 5);
-		az =  process(az,e.z * 5);
-		az = parseInt(az* 100) / 100;
-		$("#test")[0].innerHTML = az + "   " + ay + "   " + ax;
-		vx += ax;
-		vy += ay;
-		vz += az;
-		vx *= .98;
-		vy *= .98;
-		vz *= .98;
+		/*ax = e.x//process(ax,e.x * 5);
+		ay =  180 * Math.asin(b.y/(e.y)) / Math.PI;
+		pitch = 180 * Math.atan(e.y/Math.sqrt(Math.pow(e.x,2) + Math.pow(e.z,2))) / Math.PI
+		heading = 180 * Math.atan(e.z/Math.sqrt(Math.pow(e.x,2) + Math.pow(e.y,2))) / Math.PI
+		roll = 180 * Math.atan(e.x/Math.sqrt(Math.pow(e.z,2) + Math.pow(e.y,2))) / Math.PI
+		*//*
+		var res = rotation({roll:ay,pitch:ax,yaw:az},{alpha:b.y,beta:b.x,gamma:b.z}) / Math.PI;
+		ay = res.roll;
+		ax = res.pitch;
+		az = res.yaw;
 
-		y += vy/50;
-		x += vx/50;
-		ax *= 10000;
-		ax = parseInt(ax);
-		ax /= 2000;
-		if(landscapeOrientation){
-			glob.setPov(2 * ay,az,1);
-		}
-		else {
-			glob.setPov(az,2 * ay,1);
-		}
+		$("#test")[0].innerHTML =  ax;
+		glob.setPov(1 ,e.y,1);
     }, true);
  /*window.addEventListener("deviceorientation", function () {
  	if(iBeta == null && !isNaN(event.beta)) {
