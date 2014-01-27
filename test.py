@@ -34,39 +34,6 @@ def init_db():
 
 
 
-#putting in tour data
-#AGHHH
-def add_tour(dic):
-    conn=sql.connect('crowdhunts.db')
-    c=conn.cursor()
-    c.execute("SELECT tourid FROM tours DESC")
-    tourid=c.fetchone()
-    if tourid==None:
-        tourid=0
-    tourid+=1
-    list_stops=dic['stops']
-    list_info=dic['info']
-    #adding stops shit
-    temp_stop=list_stops[0]
-    temp=(temp_stop[0],temp_stop[1],temp_stop[2],temp_stop[3],temp_stop[4],tourid)
-    c.execute("INSERT INTO start VALUES (?,?,?,?,?,?)",temp)
-    conn.commit()
-    for i in range(1,len(list_stops)-1):
-         temp_stop=list_stops[i]
-         temp=(temp_stop[0],temp_stop[1],temp_stop[2],temp_stop[3],temp_stop[4],tourid)
-         c.execute("INSERT INTO cmpnt VALUES (?,?,?,?,?,?)",temp)
-         conn.commit()
-    temp_stop=list_stops[-1]
-    temp=(temp_stop[0],temp_stop[1],temp_stop[2],temp_stop[3],temp_stop[4],tourid)
-    c.execute("INSERT INTO end VALUES (?,?,?,?,?,?)",temp)
-    conn.commit()
-    #adding info shit
-    temp=(list_info[0],list_info[1],list_info[2],tourid)
-    c.execute("INSERT INTO tours VALUES (?,?,?,?)", temp)
-    conn.commit()
-    conn.close()
-    return True
-
 # USERS STUFF----------
 
 #add user (for registering)
@@ -164,6 +131,39 @@ def users_by_score():
 
 
 
+
+#putting in tour data
+#AGHHH
+def add_tour(dic):
+    conn=sql.connect('crowdhunts.db')
+    c=conn.cursor()
+    c.execute("SELECT tourid FROM tours DESC")
+    tourid=c.fetchone()
+    if tourid==None:
+        tourid=0
+    tourid+=1
+    list_stops=dic['stops']
+    list_info=dic['info']
+    #adding stops shit
+    temp_stop=list_stops[0]
+    temp=(temp_stop[0],temp_stop[1],temp_stop[2],temp_stop[3],temp_stop[4],tourid)
+    c.execute("INSERT INTO start VALUES (?,?,?,?,?,?)",temp)
+    conn.commit()
+    for i in range(1,len(list_stops)-1):
+         temp_stop=list_stops[i]
+         temp=(temp_stop[0],temp_stop[1],temp_stop[2],temp_stop[3],temp_stop[4],tourid)
+         c.execute("INSERT INTO cmpnt VALUES (?,?,?,?,?,?)",temp)
+         conn.commit()
+    temp_stop=list_stops[-1]
+    temp=(temp_stop[0],temp_stop[1],temp_stop[2],temp_stop[3],temp_stop[4],tourid)
+    c.execute("INSERT INTO end VALUES (?,?,?,?,?,?)",temp)
+    conn.commit()
+    #adding info shit
+    temp=(list_info[0],list_info[1],list_info[2],tourid)
+    c.execute("INSERT INTO tours VALUES (?,?,?,?)", temp)
+    conn.commit()
+    conn.close()
+    return True
 
 
 
