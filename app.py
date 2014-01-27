@@ -44,15 +44,15 @@ def new_start():
     session['new-meta'] = {'title':title, 'desc':desc}
 
 # POST keys:
-# lat
-# lon
+# panoid
 # desc
 # index
 @app.route('/jax/new/addstop')
 def new_stop():
     #add to session
+    data = request.get_json()
     if 'new-tour' in session:
-        session['new-tour'].append(())
+        session['new-tour'].append((data['desc'], data['panoid'], dat['index']))
 
 
 @app.route('/jax/new/end')
