@@ -41,21 +41,31 @@ def quest():
 # desc
 @app.route('/jax/new/start')
 def new_start():
-    pass
+    session['new-meta'] = {'title':title, 'desc':desc}
 
-# quest posting
-# /jax/new/addstop
+# POST keys:
+# lat
+# lon
+# desc
+# index
 @app.route('/jax/new/addstop')
 def new_stop():
     #add to session
     if 'new-tour' in session:
         session['new-tour'].append(())
-    else:
-        session['new-tour'] = []
+
 
 @app.route('/jax/new/end')
 def new_end():
-    pass
+    session.pop('new-tour')
+    session.pop('new-meta')
+    # commit to db
+
+# cancel a tour in progress
+@app.route('/jax/new/cancel')
+def new_cancel():
+    session.pop('new-tour')
+    session.pop('new-meta')
 
 ### LOGIN FOLLOWS ###
 
