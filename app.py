@@ -48,8 +48,7 @@ def quest():
 # desc
 @app.route('/jax/new/start')
 def new_start():
-    session['new-meta'] = {'title':title, 'desc':desc, 
-                           'usern':session['usern']}
+    session['new-meta'] = {'title':title, 'desc':desc}
     session['new-tour'] = []
 
 # POST keys:
@@ -74,7 +73,8 @@ def new_stop():
 def new_end():
     tour = session.pop('new-tour')
     meta = session.pop('new-meta')
-    db.add_tour(tour, meta)
+    data = {'stops':tour, 'info':(session['usern'], meta['title'], meta['desc'])}
+    db.add_tour(data)
 
 # cancel a tour in progress
 @app.route('/jax/new/cancel')
