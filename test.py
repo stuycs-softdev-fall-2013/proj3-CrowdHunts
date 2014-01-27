@@ -1,5 +1,6 @@
 import sqlite3 as sql
 from werkzeug.security import generate_password_hash, check_password_hash
+from math import *
 
 '''
 initializes 2 db's
@@ -148,7 +149,7 @@ def pic_by_loc(lati,longi):
     #   return tempdata[2]
 
 #search by proximity, get all in a certain radius of a certain point. (not really radius, more like a square)
-#@params: center, "radius"
+#@param: center, "radius"
 #@return: a list of geo_pics that are in the vicinity
 def pics_in_prox(lati,longi,length):
     conn=sql.connect('crowdhunts.db')
@@ -160,3 +161,15 @@ def pics_in_prox(lati,longi,length):
     conn.close()
     return templist
     
+#updating a geo_pic
+#@precondition: geo_pic must exist at loc to update
+#@param: lat, long, newpic
+#@return: True cuz assuming precond
+def updt_geo_pic(lati,longi,newpic):
+    conn=sql.connect('crowdhunts.db')
+    c=conn.cursor()
+    temp=(newpic,lati,longi)
+    c.execute("UPDATE geo_pic SET image=? WHERE latitude=? AND longitude=?",temp)
+    conn.commit()
+    conn.close()
+    return True
