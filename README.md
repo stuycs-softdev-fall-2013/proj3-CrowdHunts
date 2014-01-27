@@ -10,5 +10,5 @@ Users mark locations in the world and provide clues that will help guide other u
 ##Roles
 - Will 	  : Game - users, scores, leaderboards, stats, social
 - Hunter  : Image + controls
-- Tak Chi : Tour - Destination, thumbnails
+- Tak Chi : Frontend /Styling
 - Yaseen  : DB - SQLite

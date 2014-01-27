@@ -14,14 +14,14 @@ def init_db():
     conn=sql.connect('crowdhunts.db')
     c=conn.cursor()
     c.execute("""
-CREATE TABLE users (
-username text,
-password text,
-total_dist real,
-avg_score real,
-num_plays real,
-high_score real
-)""")
+    CREATE TABLE users (
+    username text,
+    password text,
+    total_dist real,
+    avg_score real,
+    num_plays real,
+    high_score real
+    )""")
     c.execute("CREATE TABLE geo_pic (latitude real, longitude real, image blob)")
     conn.commit()
     conn.close()
@@ -113,7 +113,7 @@ def users_by_score():
     conn=sql.connect('crowdhunts.db')
     c=conn.cursor()
     templist=[]
-    for row in c.execute("SELECT username FROM users ORDER BY high_score DESC"):
+    for row in c.execute("SELECT username, high_score FROM users ORDER BY high_score DESC"):
         templist.append(row)
     conn.close()
     return templist
@@ -143,9 +143,9 @@ def pic_by_loc(lati,longi):
     c.execute("SELECT * FROM geo_pic WHERE latitude=? AND longitude=?",temp)
     tempdata=c.fetchone()
     conn.close()
-    if tempdata==None:
-        return tempdata
-    return tempdata[2]
+    #    if tempdata==None:
+    return tempdata
+    #   return tempdata[2]
 
 #search by proximity, get all in a certain radius of a certain point. (not really radius, more like a square)
 #@params: center, "radius"
