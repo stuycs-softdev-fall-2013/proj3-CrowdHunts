@@ -1,6 +1,7 @@
 from flask import Flask, render_template, redirect, request, abort, jsonify, session
 from random import choice
 import test as db
+import image_utils
 
 app = Flask(__name__)
 app.secret_key = 'shh this is secret'
@@ -17,7 +18,7 @@ def leaders():
 # user profile page
 @app.route('/u/<usern>')
 def profile(usern):
-    #db query
+    user = db.get_user(usern)
     return render_template('user.html', user=usern)
 
 @app.route('/play')
@@ -66,6 +67,8 @@ def clue():
 ## picture   = pic
 ## latitude  = lat
 ## longitude = lon
+## x position = x
+## y position = y
 # mimetype should be application/json
 @app.route('/jax/addpic', methods=['POST'])
 def save_geo_pic():
@@ -74,7 +77,15 @@ def save_geo_pic():
     pic = data['pic']
     lat = data['lat']
     lon = data['lon']
-    db.add_geo_pic(lat, lon, pic)
+    x = data['x']
+    y = data['y']
+    streetview = db.pic_by_loc(lat, lon)
+    if streetview is None:
+        image_utils.b64_Image_at_loc(pic, x, y)
+        db.add_geo_pic(lat, lon, pic)
+    else:
+        img = combine_b64(pic, streetview[2], x, y)
+        #update db
 
 ### LOGIN FOLLOWS ###
 
