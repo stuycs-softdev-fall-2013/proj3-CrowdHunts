@@ -8,7 +8,7 @@ app.secret_key = 'shh this is secret'
 
 @app.route('/')
 def index():
-    return "Yo, it's an index"
+    return render_template('index.html')
 
 @app.route('/leaderboard')
 def leaders():
@@ -33,69 +33,53 @@ def test():
 
 ### AJAX ###
 
-# return geopic
-# /streetview?lon=1&lat=1
-@app.route('/jax/streetview')
-def streetview():
-    require_login()
-    lat = request.args.get('lat')
-    lon = request.args.get('lon')
-    if not (lat and lon):
-        abort(400)
-    res = db.pic_by_loc(lat, lon)
-    ret = {'pic':res['image'],
-           'lat':res['latitude'],
-           'lon':res['longitude']}
-    return jsonify(**ret)
+# quest retrieval
+# /jax/getquest?lat=1&lon=1
+@app.route('/jax/getquest')
+def quest():
+    #return db stuff
+    request.args.get('lat')
+    request.args.get('lon')
+    db.quest_in_prox(lat, lon)
 
+# POST keys:
+# title
+# desc
+@app.route('/jax/new/start')
+def new_start():
+    session['new-meta'] = {'title':title, 'desc':desc}
+    session['new-tour'] = []
 
-
-
-
-# return the next hunt goal
-# /game/clue?lon=1&lat=1
-
-
-@app.route('/jax/goal')
-def clue():
-    require_login()
-    lat = request.args.get('lat')
-    lon = request.args.get('lon')
-    if not (lat and lon):
-        abort(400)
-    # need better location searching
-    res = db.pics_in_prox(lat, lon, .5)
-    if len(res) > 0:
-        ret = {'lat':choice(res)[0], 
-               'lon':choice(res)[1],
-               'pic':choice(res)[2]}
-        return jsonify(**ret)
-    return jsonify({'error':'Nothing nearby'})
-
-# post a picture
-# POST details:
-## picture   = pic
-## latitude  = lat
-## longitude = lon
-## x position = x
-## y position = y
-# mimetype should be application/json
-@app.route('/jax/addpic', methods=['POST'])
-def save_geo_pic():
-    require_login()
+# POST keys:
+# title
+# panoid
+# lat
+# lon
+# desc
+@app.route('/jax/new/addstop')
+def new_stop():
+    #add to session
     data = request.get_json()
-    pic = data['pic']
-    lat = data['lat']
-    lon = data['lon']
-    x = data['x']
-    y = data['y']
-    streetview = db.pic_by_loc(lat, lon)
-    if streetview is None:
-        image_utils.b64_Image_at_loc(pic, x, y)
-        db.add_geo_pic(lat, lon, pic)
-    else:
-        img = combine_b64(pic, streetview[2], x, y)
-        #update db
+    if 'new-tour' in session:
+        session['new-tour'].append((data['title'],
+                                    data['desc'],
+                                    data['lat'],
+                                    data['lon'],
+                                    data['panoid']))
+    
+
+@app.route('/jax/new/end')
+def new_end():
+    tour = session.pop('new-tour')
+    meta = session.pop('new-meta')
+    data = {'stops':tour, 'info':(session['usern'], meta['title'], meta['desc'])}
+    db.add_tour(data)
+
+# cancel a tour in progress
+@app.route('/jax/new/cancel')
+def new_cancel():
+    session.pop('new-tour')
+    session.pop('new-meta')
 
 ### LOGIN FOLLOWS ###
 
