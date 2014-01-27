@@ -39,7 +39,9 @@ def test():
 @app.route('/jax/getquest')
 def quest():
     #return db stuff
-    pass
+    request.args.get('lat')
+    request.args.get('lon')
+    db.quest_in_prox(lat, lon)
 
 # POST keys:
 # title
@@ -68,9 +70,9 @@ def new_stop():
 
 @app.route('/jax/new/end')
 def new_end():
-    session.pop('new-tour')
-    session.pop('new-meta')
-    # commit to db
+    tour = session.pop('new-tour')
+    meta = session.pop('new-meta')
+    db.add_tour(tour, meta)
 
 # cancel a tour in progress
 @app.route('/jax/new/cancel')
