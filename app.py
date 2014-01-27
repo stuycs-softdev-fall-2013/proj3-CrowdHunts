@@ -1,4 +1,5 @@
-from flask import Flask, render_template, redirect, request, abort, jsonify, session
+from flask import Flask, render_template, redirect, request, abort, jsonify, session, make_response
+import crossdomain
 from random import choice
 import test as db
 import image_utils
@@ -26,6 +27,10 @@ def play():
     require_login()
     return render_template('game.html')
 
+@app.route('/test',methods=['GET','OPTIONS'])
+@crossdomain.crossdomain(origin="*",headers='Content-Type,origin,accept,contentType')
+def test():
+    return render_template('test.html')
 
 ### AJAX ###
 
