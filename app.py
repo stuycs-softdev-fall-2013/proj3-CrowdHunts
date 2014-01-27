@@ -29,63 +29,33 @@ def play():
 
 ### AJAX ###
 
-# return geopic
-# /streetview?lon=1&lat=1
-@app.route('/jax/streetview')
-def streetview():
-    require_login()
-    lat = request.args.get('lat')
-    lon = request.args.get('lon')
-    if not (lat and lon):
-        abort(400)
-    res = db.pic_by_loc(lat, lon)
-    ret = {'pic':res['image'],
-           'lat':res['latitude'],
-           'lon':res['longitude']}
-    return jsonify(**ret)
+# quest retrieval
+# /jax/getquest?lat=1&lon=1
+@app.route('/jax/getquest')
+def quest():
+    #return db stuff
+    pass
 
-# return the next hunt goal
-# /game/clue?lon=1&lat=1
-@app.route('/jax/goal')
-def clue():
-    require_login()
-    lat = request.args.get('lat')
-    lon = request.args.get('lon')
-    if not (lat and lon):
-        abort(400)
-    # need better location searching
-    res = db.pics_in_prox(lat, lon, .5)
-    if len(res) > 0:
-        ret = {'lat':choice(res)[0], 
-               'lon':choice(res)[1],
-               'pic':choice(res)[2]}
-        return jsonify(**ret)
-    return jsonify({'error':'Nothing nearby'})
+# POST keys:
+# title
+# desc
+@app.route('/jax/new/start')
+def new_start():
+    pass
 
-# post a picture
-# POST details:
-## picture   = pic
-## latitude  = lat
-## longitude = lon
-## x position = x
-## y position = y
-# mimetype should be application/json
-@app.route('/jax/addpic', methods=['POST'])
-def save_geo_pic():
-    require_login()
-    data = request.get_json()
-    pic = data['pic']
-    lat = data['lat']
-    lon = data['lon']
-    x = data['x']
-    y = data['y']
-    streetview = db.pic_by_loc(lat, lon)
-    if streetview is None:
-        image_utils.b64_Image_at_loc(pic, x, y)
-        db.add_geo_pic(lat, lon, pic)
+# quest posting
+# /jax/new/addstop
+@app.route('/jax/new/addstop')
+def new_stop():
+    #add to session
+    if 'new-tour' in session:
+        session['new-tour'].append(())
     else:
-        img = combine_b64(pic, streetview[2], x, y)
-        #update db
+        session['new-tour'] = []
+
+@app.route('/jax/new/end')
+def new_end():
+    pass
 
 ### LOGIN FOLLOWS ###
 
