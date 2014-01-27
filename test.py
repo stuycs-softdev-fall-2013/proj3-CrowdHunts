@@ -23,10 +23,49 @@ def init_db():
     num_plays real,
     high_score real
     )""")
-    c.execute("CREATE TABLE geo_pic (latitude real, longitude real, image blob)")
+    c.execute("CREATE TABLE start (title text, desc text, lat real, lon real, panoid text, tourid int)")
+    c.execute("CREATE TABLE cmpnt (title text, desc text, lat real, lon real, panoid text, tourid int)")
+    c.execute("CREATE TABLE end   (title text, desc text, lat real, lon real, panoid text, tourid int)")
+    c.execute("CREATE TABLE tours (username text, title text, desc text, tourid int)")
     conn.commit()
     conn.close()
+    return True
 
+
+
+
+#putting in tour data
+#AGHHH
+def add_tour(dic):
+    conn=sql.connect('crowdhunts.db')
+    c=conn.cursor()
+    c.execute("SELECT tourid FROM tours DESC")
+    tourid=c.fetchone()
+    if tourid==None:
+        tourid=0
+    tourid+=1
+    list_stops=dic['stops']
+    list_info=dic['info']
+    #adding stops shit
+    temp_stop=list_stops[0]
+    temp=(temp_stop[0],temp_stop[1],temp_stop[2],temp_stop[3],temp_stop[4],tourid)
+    c.execute("INSERT INTO start VALUES (?,?,?,?,?,?)",temp)
+    conn.commit()
+    for i in range(1,len(list_stops)-1):
+         temp_stop=list_stops[i]
+         temp=(temp_stop[0],temp_stop[1],temp_stop[2],temp_stop[3],temp_stop[4],tourid)
+         c.execute("INSERT INTO cmpnt VALUES (?,?,?,?,?,?)",temp)
+         conn.commit()
+    temp_stop=list_stops[-1]
+    temp=(temp_stop[0],temp_stop[1],temp_stop[2],temp_stop[3],temp_stop[4],tourid)
+    c.execute("INSERT INTO end VALUES (?,?,?,?,?,?)",temp)
+    conn.commit()
+    #adding info shit
+    temp=(list_info[0],list_info[1],list_info[2],tourid)
+    c.execute("INSERT INTO tours VALUES (?,?,?,?)", temp)
+    conn.commit()
+    conn.close()
+    return True
 
 # USERS STUFF----------
 
@@ -120,6 +159,26 @@ def users_by_score():
     return templist
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'''
 # GEO_PIC STUFF----------
 
 #adding a geo_pic
@@ -173,3 +232,4 @@ def updt_geo_pic(lati,longi,newpic):
     conn.commit()
     conn.close()
     return True
+'''
