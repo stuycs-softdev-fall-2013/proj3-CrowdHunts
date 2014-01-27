@@ -23,9 +23,9 @@ def init_db():
     num_plays real,
     high_score real
     )""")
-    c.execute("CREATE TABLE start (title text, desc text, lat real, lon real, panoid text, tourid int)")
-    c.execute("CREATE TABLE cmpnt (title text, desc text, lat real, lon real, panoid text, tourid int, index int)")
-    c.execute("CREATE TABLE end   (title text, desc text, lat real, lon real, panoid text, tourid int)")
+    c.execute("CREATE TABLE start (title text, desc text, lat real, lon real, panoid text, tourid int, indx int)")
+    c.execute("CREATE TABLE cmpnt (title text, desc text, lat real, lon real, panoid text, tourid int, indx int)")
+    c.execute("CREATE TABLE end   (title text, desc text, lat real, lon real, panoid text, tourid int, indx int)")
     c.execute("CREATE TABLE tours (username text, title text, desc text, tourid int)")
     conn.commit()
     conn.close()
@@ -146,8 +146,8 @@ def add_tour(dic):
     list_info=dic['info']
     #adding stops shit
     temp_stop=list_stops[0]
-    temp=(temp_stop[0],temp_stop[1],temp_stop[2],temp_stop[3],temp_stop[4],tourid)
-    c.execute("INSERT INTO start VALUES (?,?,?,?,?,?)",temp)
+    temp=(temp_stop[0],temp_stop[1],temp_stop[2],temp_stop[3],temp_stop[4],tourid, 0)
+    c.execute("INSERT INTO start VALUES (?,?,?,?,?,?,?)",temp)
     conn.commit()
     for i in range(1,len(list_stops)-1):
          temp_stop=list_stops[i]
@@ -155,8 +155,8 @@ def add_tour(dic):
          c.execute("INSERT INTO cmpnt VALUES (?,?,?,?,?,?,?)",temp)
          conn.commit()
     temp_stop=list_stops[-1]
-    temp=(temp_stop[0],temp_stop[1],temp_stop[2],temp_stop[3],temp_stop[4],tourid)
-    c.execute("INSERT INTO end VALUES (?,?,?,?,?,?)",temp)
+    temp=(temp_stop[0],temp_stop[1],temp_stop[2],temp_stop[3],temp_stop[4],tourid, -1)
+    c.execute("INSERT INTO end VALUES (?,?,?,?,?,?,?)",temp)
     conn.commit()
     #adding info shit
     temp=(list_info[0],list_info[1],list_info[2],tourid)
@@ -166,7 +166,44 @@ def add_tour(dic):
     return True
 
 
+def get_tour(tourid):
+    pass #will return a dict like the one that add_tour takes in
 
+def get_users_tours(username):
+    pass #will return a list of tour tuples: [ (title, desc, tourid) ]
+
+''' NOT SURE WHATS WRONG, SOMETHING WITH THE MAX INDX CHECKING SHIT OR SOMEWHERE THERE GAH
+#getting the next step in a tour (index of start is 0, index of end is -1)
+#@param: current index, tour id
+#return: tuple of next step, or None if tour over
+def get_next_stop( indx, tourid):
+    if indx==-1:
+        return None
+    conn=sql.connect('crowdhunts.db')
+    c=conn.cursor()
+    tempp=(tourid,)
+    c.execute("SELECT indx FROM cmpnt WHERE tourid=? ORDER BY indx DESC", tempp)
+    next_indx=indx+1
+    temp=c.fetchone()
+    if temp==None:
+        next_indx=-1
+    max_indx=temp[0]
+    if max_indx>=next_indx:
+        next_indx=-1
+    next_stop=None
+    if next_indx==-1:
+        temp=(tourid,)
+        c.execute("SELECT * FROM end WHERE tourid=?",temp)
+        temprow=c.fetchone()
+        next_stop=temprow
+    else:
+        temp(next_indx,)
+        c.execute("SELECT * FROM cmpnt WHERE indx=?",temp)
+        temprow=c.fetchone()
+        next_stop=temprow
+    conn.close()
+    return next_stop
+'''
 
 
 
