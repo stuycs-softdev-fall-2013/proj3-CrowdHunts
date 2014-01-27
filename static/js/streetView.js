@@ -3,20 +3,33 @@ var canvas = $("#main")[0];
 //var context = canvas.getContext("2d");
 var apiKey = "AIzaSyDP6aoULMAMJg1uSocCFiNg9rhMiUHyui4";
 
-function StreetView() {
+function StreetView(canvas) {
 
 	var gc = new google.maps.Geocoder();
 
 	var ans =  {
 		geocoder: gc,
+		canvas: canvas,
+		pano:null,
+
 		thisTest: function() {
 			console.log(this.getLatLng("Eiffel Tower"));
+		},
+		setPov: function(h,p,z) {
+			if(this.pano != null) {
+				this.pano.setPov({
+					heading: h,
+					pitch: p,
+					zoom: z,
+				})
+			}
+			return this.pano;
 		},
 
 		findStreetView: function(location) {
 			var self = this;
 			this.getLatLng(location,function(result) {
-				self.getStreetViewContainer(result.d,result.e);
+				self.pano = self.getStreetViewContainer(result.d,result.e);
 			})
 		},
 		getStreetViewContainer: function(lat,lng) {
@@ -31,11 +44,11 @@ function StreetView() {
 			}
 
 			var pano = new google.maps.StreetViewPanorama(
-				$("#main")[0],
+				this.canvas,
 				panoOptions
 			);
 			pano.setVisible(true);
-			return null;
+			return pano;
 		},
 		getLatLng: function(location,callback) {
 			gc.geocode({address: location},function(results,status) {

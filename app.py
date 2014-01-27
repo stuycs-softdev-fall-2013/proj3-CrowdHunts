@@ -27,7 +27,7 @@ def play():
     return render_template('game.html')
 
 @app.route('/test',methods=['GET','OPTIONS'])
-@crossdomain.crossdomain(origin="*",headers='Content-Type')
+@crossdomain.crossdomain(origin="*",headers='Content-Type,origin,accept,contentType')
 def test():
     return render_template('test.html')
 
