@@ -58,7 +58,7 @@ def new_stop():
                                     data['lat'],
                                     data['lon'],
                                     data['panoid'],
-                                    dat['index']))
+                                    data['index']))
     
 
 @app.route('/jax/new/end')
