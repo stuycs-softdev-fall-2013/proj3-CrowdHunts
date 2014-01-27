@@ -1,4 +1,5 @@
-from flask import Flask, render_template, redirect, request, abort, jsonify, session
+from flask import Flask, render_template, redirect, request, abort, jsonify, session, make_response
+import crossdomain
 from random import choice
 import test as db
 
@@ -25,6 +26,10 @@ def play():
     require_login()
     return render_template('game.html')
 
+@app.route('/test',methods=['GET','OPTIONS'])
+@crossdomain.crossdomain(origin="*",headers='Content-Type')
+def test():
+    return render_template('test.html')
 
 ### AJAX ###
 
@@ -43,8 +48,14 @@ def streetview():
            'lon':res['longitude']}
     return jsonify(**ret)
 
+
+
+
+
 # return the next hunt goal
 # /game/clue?lon=1&lat=1
+
+
 @app.route('/jax/goal')
 def clue():
     require_login()
