@@ -9,7 +9,7 @@ app.secret_key = 'shh this is secret'
 
 @app.route('/')
 def index():
-    return "Yo, it's an index"
+    return render_template('index.html')
 
 @app.route('/leaderboard')
 def leaders():
@@ -39,7 +39,9 @@ def test():
 @app.route('/jax/getquest')
 def quest():
     #return db stuff
-    pass
+    request.args.get('lat')
+    request.args.get('lon')
+    db.quest_in_prox(lat, lon)
 
 # POST keys:
 # title
@@ -47,30 +49,32 @@ def quest():
 @app.route('/jax/new/start')
 def new_start():
     session['new-meta'] = {'title':title, 'desc':desc}
+    session['new-tour'] = []
 
 # POST keys:
+# title
 # panoid
 # lat
 # lon
 # desc
-# index
 @app.route('/jax/new/addstop')
 def new_stop():
     #add to session
     data = request.get_json()
     if 'new-tour' in session:
-        session['new-tour'].append((data['desc'],
+        session['new-tour'].append((data['title'],
+                                    data['desc'],
                                     data['lat'],
                                     data['lon'],
-                                    data['panoid'],
-                                    data['index']))
+                                    data['panoid']))
     
 
 @app.route('/jax/new/end')
 def new_end():
-    session.pop('new-tour')
-    session.pop('new-meta')
-    # commit to db
+    tour = session.pop('new-tour')
+    meta = session.pop('new-meta')
+    data = {'stops':tour, 'info':(session['usern'], meta['title'], meta['desc'])}
+    db.add_tour(data)
 
 # cancel a tour in progress
 @app.route('/jax/new/cancel')
