@@ -9,7 +9,7 @@ app.secret_key = 'shh this is secret'
 
 @app.route('/')
 def index():
-    return ""
+    return render_template('index.html')
 
 @app.route('/leaderboard')
 def leaders():
