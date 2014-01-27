@@ -1,16 +1,30 @@
 {% extends "base.html" %}
 {% block content %}
 
-  <h1>Leaderboard</h1>
-  
-  <table>
-    <th>User</th>
-    <th>Score</th>
-    {% for i in leaders %}
-      <tr>
-	<td>{{i[0]}}</td>
-	<td>{{i[1]}}</td>
-      </tr>
-    {% endfor %}
-  </table>
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+<meta charset="utf-8"> 
+<title>Leaderboards</title> 
+<meta name="description" content="Leaderboards">
+<link href="/twitter-bootstrap/twitter-bootstrap-v2/docs/assets/css/bootstrap.css" rel="stylesheet"> 
+</head>
+<body>
+<table class="table">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Score</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for i in leaders %}
+          <tr>
+            <td>{{i[0]}}</td>
+            <td>{{i[1]}} </td>
+          </tr>
+        </tbody>
+      </table>
+</body>
 {% endblock content %}
+</html>

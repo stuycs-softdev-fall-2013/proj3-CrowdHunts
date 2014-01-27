@@ -2,6 +2,7 @@ from flask import Flask, render_template, redirect, request, abort, jsonify, ses
 import crossdomain
 from random import choice
 import test as db
+import image_utils
 
 app = Flask(__name__)
 app.secret_key = 'shh this is secret'
@@ -18,7 +19,7 @@ def leaders():
 # user profile page
 @app.route('/u/<usern>')
 def profile(usern):
-    #db query
+    user = db.get_user(usern)
     return render_template('user.html', user=usern)
 
 @app.route('/play')
@@ -77,13 +78,25 @@ def clue():
 ## picture   = pic
 ## latitude  = lat
 ## longitude = lon
+## x position = x
+## y position = y
+# mimetype should be application/json
 @app.route('/jax/addpic', methods=['POST'])
 def save_geo_pic():
     require_login()
-    pic = request.json['pic']
-    lat = request.json['lat']
-    lon = request.json['lon']
-    db.add_geo_pic(lat, lon, pic)
+    data = request.get_json()
+    pic = data['pic']
+    lat = data['lat']
+    lon = data['lon']
+    x = data['x']
+    y = data['y']
+    streetview = db.pic_by_loc(lat, lon)
+    if streetview is None:
+        image_utils.b64_Image_at_loc(pic, x, y)
+        db.add_geo_pic(lat, lon, pic)
+    else:
+        img = combine_b64(pic, streetview[2], x, y)
+        #update db
 
 ### LOGIN FOLLOWS ###
 
@@ -118,7 +131,7 @@ def register():
     else:
         usern = request.form['usern']
         passw = request.form['passw']
-        if db.get_user(usern) == None:
+        if db.get_user(usern):
             return render_template('register.html', error='Username already exists')    
         else:
             db.add_user(usern, passw)
