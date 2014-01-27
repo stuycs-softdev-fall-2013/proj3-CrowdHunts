@@ -45,6 +45,8 @@ def new_start():
 
 # POST keys:
 # panoid
+# lat
+# lon
 # desc
 # index
 @app.route('/jax/new/addstop')
@@ -52,8 +54,12 @@ def new_stop():
     #add to session
     data = request.get_json()
     if 'new-tour' in session:
-        session['new-tour'].append((data['desc'], data['panoid'], dat['index']))
-
+        session['new-tour'].append((data['desc'],
+                                    data['lat'],
+                                    data['lon'],
+                                    data['panoid'],
+                                    dat['index']))
+    
 
 @app.route('/jax/new/end')
 def new_end():
