@@ -2,7 +2,6 @@ from flask import Flask, render_template, redirect, request, abort, jsonify, ses
 import crossdomain
 from random import choice
 import test as db
-import image_utils
 
 app = Flask(__name__)
 app.secret_key = 'shh this is secret'

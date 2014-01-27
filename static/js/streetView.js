@@ -3,14 +3,35 @@ var canvas = $("#main")[0];
 //var context = canvas.getContext("2d");
 var apiKey = "AIzaSyDP6aoULMAMJg1uSocCFiNg9rhMiUHyui4";
 
+function closestVal(heading,headingList) {
+	var i = 0;
+	var ans = 360;
+	var index = 0;
+	for(i = 0; i < headingList.length;i++) {
+		console.log(headingList[i]);
+		var t = headingList[i]
+		if(t > 180) {
+			t -= 180
+		}
+		if(Math.abs(heading - t) < ans) {
+			ans = t;
+			index = i;
+		}
+	}
+	return {index:index,val:ans};
+}
+
 function StreetView(canvas) {
 
 	var gc = new google.maps.Geocoder();
-
+	var service = new google.maps.StreetViewService();
 	var ans =  {
 		geocoder: gc,
 		canvas: canvas,
+		
 		pano:null,
+		data:null,
+		service: service,
 
 		thisTest: function() {
 			console.log(this.getLatLng("Eiffel Tower"));
@@ -30,6 +51,48 @@ function StreetView(canvas) {
 			var self = this;
 			this.getLatLng(location,function(result) {
 				self.pano = self.getStreetViewContainer(result.d,result.e);
+			})
+		},
+		select: function(link) {
+			this.pano.setPano(link.pano);
+		},
+		transitionTarget: function(lat,lng) { //requires pano data for current pano
+			var links = this.pano.getLinks();
+			var i = 0;
+			var dir = this.direction(lat,lng);
+			console.log(dir);
+			var headings = [];
+
+			for(i =0; i < links.length;i++) {
+				headings.push(links[i].heading);
+			}
+
+			var res = closestVal(dir.heading,headings)
+
+			return links[res.index];
+		},
+		direction: function(lat,lng) {
+			var loc = this.pano.getPosition();
+			var cLat = loc.lat();
+			var cLng = loc.lng();
+
+			var w = cLat - lat;
+			var h = cLng - lng;
+
+			var out = Math.sqrt(Math.pow(w,2) + Math.pow(h,2));
+			var heading = Math.acos(-w/out);
+			heading = heading * 180 / Math.PI
+			return {distance:out,heading:heading};
+		},
+		closestHeading: function(headingList) {
+			return closestVal(this.pano.getPov().heading,headingList);
+		},
+		getData: function(lat,lng,rad,callback) {
+			var loc = new google.maps.LatLng(lat,lng);
+			var self = this;
+			this.service.getPanoramaByLocation(loc,rad,function(p) {
+				self.data = p;
+				callback(p);
 			})
 		},
 		getStreetViewContainer: function(lat,lng) {
