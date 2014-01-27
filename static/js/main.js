@@ -6,9 +6,10 @@ function main() {
 		width: $(window).width()
 	}
 	sv.findStreetView("Eiffel Tower");
-	canvas.mousemove(function(e) {
+	sv.setPov(0,0,0);
+	/*canvas.mousemove(function(e) {
 		console.log(e);
 		sv.setPov(-1 * e.offsetX / 10,e.offsetY/10,1)
-	})
+	})*/
 }
 $(document).ready(main);

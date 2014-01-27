@@ -40,7 +40,7 @@ function StreetView(canvas) {
 					heading: 0,
 					pitch: 0,
 				},
-				zoom:1
+				zoom:0
 			}
 
 			var pano = new google.maps.StreetViewPanorama(
