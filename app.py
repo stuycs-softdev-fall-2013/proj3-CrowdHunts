@@ -66,12 +66,14 @@ def clue():
 ## picture   = pic
 ## latitude  = lat
 ## longitude = lon
+# mimetype should be application/json
 @app.route('/jax/addpic', methods=['POST'])
 def save_geo_pic():
     require_login()
-    pic = request.json['pic']
-    lat = request.json['lat']
-    lon = request.json['lon']
+    data = request.get_json()
+    pic = data['pic']
+    lat = data['lat']
+    lon = data['lon']
     db.add_geo_pic(lat, lon, pic)
 
 ### LOGIN FOLLOWS ###
