@@ -49,23 +49,24 @@ def quest():
 @app.route('/jax/new/start')
 def new_start():
     session['new-meta'] = {'title':title, 'desc':desc}
+    session['new-tour'] = []
 
 # POST keys:
+# title
 # panoid
 # lat
 # lon
 # desc
-# index
 @app.route('/jax/new/addstop')
 def new_stop():
     #add to session
     data = request.get_json()
     if 'new-tour' in session:
-        session['new-tour'].append((data['desc'],
+        session['new-tour'].append((data['title'],
+                                    data['desc'],
                                     data['lat'],
                                     data['lon'],
-                                    data['panoid'],
-                                    data['index']))
+                                    data['panoid']))
     
 
 @app.route('/jax/new/end')
