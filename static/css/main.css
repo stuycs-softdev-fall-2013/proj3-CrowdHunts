@@ -46,6 +46,9 @@ input,textarea {
 	margin:0;
 	border:0;
 }
+.scrollable {
+	overflow:scroll;
+}
 ::-webkit-input-placeholder { /* WebKit browsers */
     font-style:italic;
 	font-family: "Times New Roman", Times, serif;

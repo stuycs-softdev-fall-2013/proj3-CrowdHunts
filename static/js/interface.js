@@ -9,6 +9,12 @@ function TouchUI() {
 		})
 	}
 	var UI = {
+		setFrame: function(context,frameNum) {
+			var oldFrame = -parseInt(context.style.left)/100
+			context.style.left = -100 * frameNum;
+			openFrame(context,oldFrame,frameNum);
+			return oldFrame;
+		}
 		openFrame: function(context,frameSource,frameNum) {
 			var frames = $(context).children('.frame[number='+frameNum+']');
 

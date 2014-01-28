@@ -27,7 +27,6 @@
 	}
 	.body {
 		font-style:normal;
-		overflow:scroll;
 		height:50%;
 	}
 	#description {
@@ -155,14 +154,12 @@
     .desc {
     	color:white;
     	font-style:normal;
-		overflow:scroll;
 		height:70%;
 		
     	font-style: normal;
     	font-size:15pt;
     	margin-top:10pt;
     	color:white;
-    	overflow:scroll;
     }
     .padded {
     	position:absolute;
@@ -191,12 +188,7 @@
 						</div>
 						<hr />
 						<div class="body">
-							<textarea id="stopDescription" class="edit scrollable" placeholder="Description">
-								Hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter
-															Hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter hunter
-
-
-							</textarea>
+							<textarea id="stopDescription" class="edit scrollable" placeholder="Description">njdsfsnjdsfsnjd sfsnjdsfsnjdsfsnjdsfsnjdsfsnjdsfsnjdsfsnjds fsnjdsfsnjdsfsnjdsfsnjdsfsnjdsfsnjdsfsnjdsf snjdsfsnjdsfsnjdsfsnjdsfsnjdsfsnjdsfsnjdsfs njdsfsnjdsfsnjdsfsnjdsfsnjdsfsnjdsfsnjdsfsn jdsfsnjdsfsnjdsfsnjdsfsnjdsfsnjdsfsnjdsfsnj dsfsnjdsfsnjdsfsnjdsfsnjdsfsnjdsfsnjdsfsnjd sfsnjdsfsnjdsfsnjdsfsnjdsfsnjdsfsnjdsfsnjds fsnjdsfsnjdsfsnjdsfsnjd sfsnjdsfs</textarea>
 
 						</div>
 					</div>
@@ -282,6 +274,9 @@
     		ele.innerHTML = "";
     	});
     	$(".next.frame")[0].style.top= "100%";
+    	$("#view").map(function(i,ele) {
+    		ele.style.left = 0;
+    	})
 
     }
     var newSubmission = function() {
@@ -329,6 +324,7 @@
     	var lat = LatLng.lat();
     	var lon = LatLng.lng();
     	var POST = {
+    		contentType:'application/json',
     		title:title,
     		panoid:id,
     		lat:lat,
@@ -339,8 +335,8 @@
     	$.post(url,POST).done(endSubmission).fail(endSubmission)
     }
     var endTour = function() {
-    	url = "/jax/finishquest"
-    	$.post(url,"we did it bitch");
+    	url = "/jax/new/end"
+    	$.get(url,"we did it bitch");
     	UIEndTour();
     }
     $(".finish").on("tap",endTour);
@@ -359,6 +355,7 @@
     	},1000)
     	
     })
+    $("#deny").on("tap",reset);
     console.log(env);
     </script>
 
