@@ -30,6 +30,18 @@ def test():
 
 ### AJAX ###
 
+# GET on finish quest
+# include questid as parameter
+# /jax/finishquest?questid=1
+@app.route('/jax/finishquest')
+def finishquest():
+    if 'questid' in request.args:
+        db.add_plays(session['usern'], 1)
+        ret = {'num_quests':db.get_user(session['usern'])[1]}
+        return jsonify(**ret)
+    ret = {'error':'questid missing'}
+    return ret
+
 # stop retrieval
 # index is the current index
 # /jax/getstop?questid=123&index=2
