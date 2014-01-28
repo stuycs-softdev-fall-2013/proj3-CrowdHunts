@@ -11,8 +11,9 @@ def index():
     if not 'usern' in session:
         return render_template('index.html')
     else:
-        return redirect('/u/'+session['usern'])
+        return "loggen id"
 
+# not very fun. we won't mention it, but we'll leave it there in case anyone's interested
 @app.route('/leaderboard')
 def leaders():
     leaders = db.users_by_score()
@@ -93,10 +94,10 @@ def new_stop():
     data = request.get_json()
     if 'new-stops' in session:
         session['new-stops'].append((data['title'],
-                                    data['desc'],
-                                    data['lat'],
-                                    data['lon'],
-                                    data['panoid']))
+                                     data['desc'],
+                                     data['lat'],
+                                     data['lon'],
+                                     data['panoid']))
     
 # GET me
 @app.route('/jax/new/end')
