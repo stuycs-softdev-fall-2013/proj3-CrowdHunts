@@ -6,6 +6,7 @@ var vz = 0;
 var y = 0;
 var x = 0;
 var glTM;
+var env;
 function main(p) {
 	var canvas = $("#main")
 	running = true;
@@ -22,42 +23,31 @@ function main(p) {
 	tM.init();
 	glTM = tM;
 	enableBasicUI();
-	//steady($("#container")[0]);
-	//steady($("#description")[0]);
-	//steady(canvas[0]);
-	//glTM = tM;
-	//$(document).bind("touchmove",false);
-//	$(document).on('touchmove', function (e) {
-  //       e.preventDefault();
-//	 });
-	//example code
-	/*
-	var desc = $("#description");
-	desc.on("drag", function() {
-		console.log("received")
-		var elem = $("#body")
-		console.log(event.detail.speeds);
-		elem.scrollTop(elem.scrollTop() + event.detail.instantaneous.distance.y);
-	})
-	$("#body").on("tap",function() {
-	})
-	$(document).on("swipe",function() {
-		var t = $("#description")[0].style.top;
-		var e = event;
-		if(- e.detail.instantaneous.speed.vy > 0) {
-			t = "0%";
-			$("#description")[0].style.top = "0%";			
-		} else {
-			t = "-30%";
-			$("#description")[0].style.top = "-30%";
-		}
-		//$("#test")[0].innerHTML = "tapped" + Math.random();
-	})
-*/t
-	//navigatorLoop();
-}
-function switchMode(mode) {
-	
+	var ans = {
+		streetView:sv,
+		touchManager:tM,
+		running:true,
+
+		navigatorLoop: function() {
+			var self = this;
+			function partial() {
+				return function(p){
+					console.log(p)
+					if(self.streetView.pano != undefined && self.streetView.direction(p.coords.latitude,p.coords.longitude).distance > .000005) {
+						var nextView = self.streetView.transitionTarget(p.coords.latitude,p.coords.longitude);
+						if(nextView != undefined) {
+							self.streetView.select(nextView);
+						}
+					}
+					console.log(self);
+					self.navigatorLoop();
+				}
+			}
+			navigator.geolocation.getCurrentPosition(partial());
+		},
+
+	}
+	return ans;
 }
 function enableBasicUI() {
     $('.scrollable').on("drag",function() {
@@ -71,14 +61,36 @@ function enableBasicUI() {
     })
     $('.swipe-left').on("swipe",function() {
     	var e = event;
-    	if(Math.abs(e.detail.instantaneous.angle - 175) < 10) {
-    		this.style.left = "-100%";
-    		this.swiped = true;
+    	var max = true;
+    	if(!this.style.left) {
+    		this.style.left = "0";
     	}
+    	if(this.getAttribute('max')) {
+    		max = (-1 * parseInt(this.style.left) / 100 < parseInt(this.getAttribute('max')));
+    	}
+    	console.log(this.getAttribute('max'));
+    	console.log(max);
+    	if(max && (this.swipeLeft == undefined|| this.swipeLeft != true)) {
+	    	if(Math.abs(e.detail.instantaneous.angle - 175) < 10) {
+	    		if(this.swipeLeft == undefined || this.swipeLeft != true) {
+	    			this.swipeLeft = true
+	    		} 
+	    		var left = parseInt(this.style.left);
+	    		left -= 100;
+
+	    		this.style.left = left + "%";
+	    	}
+	    }
+	    console.log(this.swipeLeft);
     	console.log(e.detail.instantaneous.angle)
     	/*if(e.detail.instantaneous.direction.x < 0) {
     		this.style.left = "-100%";
     	}*/
+    })
+    $('.swipe-left').on("touchend",function() {
+    	if(this.swipeLeft && this.swipeLeft != undefined) {
+    		this.swipeLeft = false;
+    	}
     })
 }
 
@@ -93,8 +105,8 @@ function navigatorLoop() {
 }
 $(document).ready(function() {
 	navigator.geolocation.getCurrentPosition(function (p) {
-		main(p);
-
+		env = main(p);
+		//env.navigatorLoop();
 	})
 
 });
@@ -129,7 +141,39 @@ function rotation(oldAngles,gyro) {
 
 
 
-
+//steady($("#container")[0]);
+	//steady($("#description")[0]);
+	//steady(canvas[0]);
+	//glTM = tM;
+	//$(document).bind("touchmove",false);
+//	$(document).on('touchmove', function (e) {
+  //       e.preventDefault();
+//	 });
+	//example code
+	/*
+	var desc = $("#description");
+	desc.on("drag", function() {
+		console.log("received")
+		var elem = $("#body")
+		console.log(event.detail.speeds);
+		elem.scrollTop(elem.scrollTop() + event.detail.instantaneous.distance.y);
+	})
+	$("#body").on("tap",function() {
+	})
+	$(document).on("swipe",function() {
+		var t = $("#description")[0].style.top;
+		var e = event;
+		if(- e.detail.instantaneous.speed.vy > 0) {
+			t = "0%";
+			$("#description")[0].style.top = "0%";			
+		} else {
+			t = "-30%";
+			$("#description")[0].style.top = "-30%";
+		}
+		//$("#test")[0].innerHTML = "tapped" + Math.random();
+	})
+*/
+	//navigatorLoop();
 
 
 

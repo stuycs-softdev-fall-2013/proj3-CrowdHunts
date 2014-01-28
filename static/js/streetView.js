@@ -58,18 +58,21 @@ function StreetView(canvas) {
 		},
 		transitionTarget: function(lat,lng) { //requires pano data for current pano
 			var links = this.pano.getLinks();
-			var i = 0;
-			var dir = this.direction(lat,lng);
-			console.log(dir);
-			var headings = [];
+			if(links != undefined) {
+				var i = 0;
+				var dir = this.direction(lat,lng);
+				console.log(dir);
+				var headings = [];
 
-			for(i =0; i < links.length;i++) {
-				headings.push(links[i].heading);
+				for(i =0; i < links.length;i++) {
+					headings.push(links[i].heading);
+				}
+
+				var res = closestVal(dir.heading,headings)
+
+				return links[res.index];
 			}
-
-			var res = closestVal(dir.heading,headings)
-
-			return links[res.index];
+			return null;
 		},
 		direction: function(lat,lng) {
 			var loc = this.pano.getPosition();
