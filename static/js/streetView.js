@@ -135,10 +135,46 @@ function StreetView(canvas) {
 			var img = new Image();
 			img.src = "http://maps.googleapis.com/maps/api/streetview?heading=" + heading + "&pitch=" + pitch + "&size=600x400&fov=" + fov + "&location=" + location + "&sensor=false&key=" + apiKey;
 			return img;
+		},
+		enableOrientationControls: function() {
+			if(window.DeviceOrientationEvent) {
+				window.addEventListener("deviceorientation", this.compassChange(),true)
+			}
+			window.addEventListener("devicemotion",this.gyroChange(),true);
+
+		},
+		compassChange: function() {
+			var self = this;
+			return function(e) {
+				if(self.pano != undefined) {
+					var pitch = self.pano.getPov().pitch;
+					var heading = process(self.pano.getPov().heading,event.webkitCompassHeading);
+					self.setPov(heading,pitch,1);
+				}
+			}
+		},
+		gyroChange: function() {
+			var self = this;
+			return function(e) {
+				if(self.pano != undefined) {
+					var modifier = 1;
+					if(isMobile.Android()) {
+						modifier = -1;
+					}
+
+					var e = event.accelerationIncludingGravity;
+					var pitch = 180 * Math.atan(e.z / Math.sqrt(Math.pow(e.y,2) + Math.pow(e.x,2))) / Math.PI;
+					var oP = self.pano.getPov().pitch;
+					oP += (pitch - oP) / 10
+					var heading = self.pano.getPov().heading;
+					self.setPov(heading,modifier * oP,1);
+				}
+			}
 		}
 	}
 	return ans;
 }
+
 
 function initImages(location) {
 	var h = 0;

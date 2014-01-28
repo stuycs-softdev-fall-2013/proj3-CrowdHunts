@@ -102,7 +102,7 @@ function TouchManager(tapLength,fingerWidth,swipeSpeed) {
 			}
 			var e = new DragEvent(distance,duration,touch1,touch2);
 
-			//console.log(e);
+			console.log(e);
 			touch1.target.dispatchEvent(e);
 			return e;
 		},
@@ -110,7 +110,6 @@ function TouchManager(tapLength,fingerWidth,swipeSpeed) {
 		isDrag: function(touch1,touch2,duration) {
 			var xSpeed = speed(touch1.screenX,touch2.screenX,duration);
 			var ySpeed = speed(touch1.screenY,touch2.screenY,duration);
-			console.log(ySpeed);
 			return !this.isTap(touch1,touch2,duration) && Math.abs(xSpeed) < this.swipeSpeed && Math.abs(ySpeed) < this.swipeSpeed;
 		},
 		isTap: function(touch1,touch2,duration) {
@@ -163,7 +162,6 @@ function TouchManager(tapLength,fingerWidth,swipeSpeed) {
 		touchMoveHandler: function() {
 			var self = this;
 			return function(e) {
-				console.log("checking for drag");
 
 				event.preventDefault();
 

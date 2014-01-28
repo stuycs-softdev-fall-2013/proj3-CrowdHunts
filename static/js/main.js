@@ -16,6 +16,7 @@ function main(p) {
 	}
 	sv.loadStreetView(p.coords.latitude,p.coords.longitude);
 	sv.setPov(0,0,0);
+	sv.enableOrientationControls();
 	glob = sv;
 	tM = new TouchManager(150,20,.8);
 	tM.init();
@@ -30,7 +31,7 @@ function main(p) {
          e.preventDefault();
 	 });
 	$("#description").on("drag", function() {
-		$("#description")[0].style.top = -event.detail.distances.y + "px";
+		$("#body")[0].scrollTop = -event.detail.distances.y + "px";
 	})
 	document.addEventListener("tap",function() {
 		var t = $("#description")[0].style.top;
@@ -59,6 +60,7 @@ function navigatorLoop() {
 $(document).ready(function() {
 	navigator.geolocation.getCurrentPosition(function (p) {
 		main(p);
+
 	})
 
 });
@@ -89,36 +91,7 @@ function rotation(oldAngles,gyro) {
 	return {roll:newR,pitch:newP,yaw:newY}
 }
 
-var orient = {a:null,b:null,g:null}
-if(window.DeviceOrientationEvent) {
-	window.addEventListener("deviceorientation", function() {
-		if(glob != undefined && glob.pano != undefined && event.webkitCompassHeading) {
-			if(orient.a == null) {
-				orient.a = event.alpha;
-			}
-			if(orient.b == null) {
-				orient.b = event.beta;
-			}
-			if(orient.g == null) {
-				orient.g = event.gamma;
-			}
-			var e = event;
-			var pitch = glob.pano.getPov().pitch;
-			var heading = process(glob.pano.getPov().heading,event.webkitCompassHeading);
-			glob.setPov(heading,pitch,1);
-		}
-	},true);
-}
-window.addEventListener("devicemotion", function() {
-	if(glob != undefined && glob.pano != undefined) {
-		var e = event.accelerationIncludingGravity;
-		var pitch = 180 * Math.atan(e.z / Math.sqrt(Math.pow(e.y,2) + Math.pow(e.x,2))) / Math.PI;
-		var oP = glob.pano.getPov().pitch;
-		oP += (pitch - oP) / 10
-		var heading = glob.pano.getPov().heading;
-		glob.setPov(heading,oP,1);
-	}
-},true)
+
 
 
 
