@@ -26,6 +26,7 @@ def play():
 
 @app.route('/create/tour')
 def createToure():
+    require_login()
     return render_template('tourInit.html')
 
 @app.route('/test',methods=['GET','OPTIONS'])
