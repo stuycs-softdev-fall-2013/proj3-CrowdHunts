@@ -28,6 +28,10 @@ def play():
 def createToure():
     return render_template('tourInit.html')
 
+@app.route('/create/edit')
+def editQuest():
+    return render_template("tourEdit.html")
+
 @app.route('/test',methods=['GET','OPTIONS'])
 @crossdomain.crossdomain(origin="*",headers='Content-Type,origin,accept,contentType')
 def test():
