@@ -87,6 +87,35 @@ function enableBasicUI() {
     		this.style.left = "-100%";
     	}*/
     })
+    $('.swipe-right').on("swipe",function() {
+    	var e = event;
+    	var min = true;
+    	if(!this.style.left) {
+    		this.style.left = "0";
+    	}
+    	if(this.getAttribute('min')) {
+    		min = (-1 * parseInt(this.style.left) / 100 = parseInt(this.getAttribute('min')));
+    	}
+    	console.log(this.getAttribute('min'));
+    	console.log(min);
+    	if(min && (this.swipeRight == undefined|| this.swipeRight != true)) {
+    		var angle = e.detail.instantaneous.angle 
+	    	if(angle < 10 || angle > 350) {
+	    		if(this.swipeRight == undefined || this.swipeRight != true) {
+	    			this.swipeRight = true
+	    		} 
+	    		var left = parseInt(this.style.left);
+	    		left += 100;
+
+	    		this.style.left = left + "%";
+	    	}
+	    }
+	    console.log(this.swipeRight);
+    	console.log(e.detail.instantaneous.angle)
+    	/*if(e.detail.instantaneous.direction.x < 0) {
+    		this.style.left = "-100%";
+    	}*/
+    })
     $('.frame').map(function(i,elem) {
     	console.log(i);
     	if(elem.hasAttribute("number")) {
@@ -98,6 +127,11 @@ function enableBasicUI() {
     $('.swipe-left').on("touchend",function() {
     	if(this.swipeLeft && this.swipeLeft != undefined) {
     		this.swipeLeft = false;
+    	}
+    })    
+    $('.swipe-right').on("touchend",function() {
+    	if(this.swipeRight && this.swipeRight != undefined) {
+    		this.swipeRight = false;
     	}
     })
 }

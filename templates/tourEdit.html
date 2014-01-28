@@ -17,11 +17,12 @@
 		font-style:italic;
 		text-shadow:2pt 2pt 0px #000000;
 	}
-	#title {
+	.title {
 		font-size:20pt;
+		font-style:italic;
 		height:20%;
 	}
-	#body {
+	.body {
 		font-style:normal;
 		overflow:scroll;
 		height:50%;
@@ -79,15 +80,15 @@
 	</style>
 	</head>
 	<body>
-		<div class="swipe-left" max=1>
+		<div class="swipe-left swipe-right" max=1 min=0>
 			<div class="designer frame" number=0>
 				<div id="description">
 					<div class="text">
-						<div id="title"> 
+						<div class="title"> 
 							<input class="edit" id="stopTitle" placeholder="Title"/>
 						</div>
 						<hr />
-						<div id="body">
+						<div class="body">
 							<textarea id="stopDescription" class="edit scrollable" placeholder="Description"></textarea>
 						</div>
 					</div>
@@ -95,7 +96,12 @@
 			</div>
 			<div class="submit frame" number=1>
 				<div class="preview">
-				<div class=
+					<div class="title">
+						bla
+					</div>
+					<div class="body">
+						test
+					</div>
 				</div>
 			</div>
 
