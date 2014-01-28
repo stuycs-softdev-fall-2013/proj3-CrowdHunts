@@ -101,7 +101,7 @@ def users_by_score():
     conn=sql.connect(DB_NAME)
     c=conn.cursor()
     templist=[]
-    for row in c.execute("SELECT TOP 100 username, num_plays FROM users ORDER BY num_plays DESC"):
+    for row in c.execute("SELECT username, num_plays FROM users ORDER BY num_plays DESC LIMIT 100"):
         templist.append(row)
     conn.close()
     return templist
