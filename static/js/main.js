@@ -17,13 +17,21 @@ function main(p) {
 	sv.loadStreetView(p.coords.latitude,p.coords.longitude);
 	sv.setPov(0,0,0);
 	glob = sv;
-	tM = new TouchManager(150,20);
+	tM = new TouchManager(150,20,.8);
 	tM.init();
 	glTM = tM;
 
-	steady($("#container")[0]);
-	steady(canvas[0]);
+	//steady($("#container")[0]);
+	//steady($("#description")[0]);
+	//steady(canvas[0]);
 	//glTM = tM;
+	//$(document).bind("touchmove",false);
+	$(document).on('touchmove', function (e) {
+         e.preventDefault();
+	 });
+	$("#description").on("drag", function() {
+		$("#description")[0].style.top = -event.detail.distances.y + "px";
+	})
 	document.addEventListener("tap",function() {
 		var t = $("#description")[0].style.top;
 		if(t == "-30%") {
