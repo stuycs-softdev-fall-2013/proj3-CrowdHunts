@@ -60,7 +60,7 @@ def finishquest():
     return ret
 
 # stop retrieval
-# index is the current index
+# index is next index
 # /jax/getstop?questid=123&index=2
 #
 @app.route('/jax/getstop')
