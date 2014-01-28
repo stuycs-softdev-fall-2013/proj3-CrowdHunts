@@ -1,43 +1,30 @@
+{% extends "base.html" %}
+{% block title %}CrowdQuests{% endblock title %}
+{% block content %}
+  <div class="container">
+    <div class="header">
+      <h3 class="text-muted">CrowdQuests</h3>
+    </div>
 
+    <div class="home">
+      <h1>Quest</h1>
+      <p class="lead">Crowdsourced quests! Play one made by others,
+	or make your own!</p>
+	<div class="btn-group btn-group-justified">
+	  <a class="btn btn-lg btn-warning" href="/login"
+	     role="button">Login</a>
+	  <a class="btn btn-lg btn-success" href="/register"
+	     role="button">Sign up today</a>
 
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>Homepage</title>
-
-    <link href="../static/css/bootstrap.css" rel="stylesheet">
-
-    <link href="jumbotron-narrow.css" rel="stylesheet">
-
-  </head>
-
-  <body>
-
-    <div class="container">
-      <div class="header">
-        <h3 class="text-muted">Treasure Hunt</h3>
+	</div>
+    </div>
+    <br/>
+    <div class="rows">
+      <div class="col-lg-6">
+        <h4>Creators</h4>
+        <p>Developed by Will Field-Thompson, Yaseen Islam, Tak Chi Wan, Hunter Herman</p>
+        <p>&copy; Stuyvesant High School Software Development 2013-14</p>
       </div>
-
-      <div class="home">
-        <h1>Quest</h1>
-        <p class="lead">Crowdsourced tours! Very cool.</p>
-        <p><a class="btn btn-lg btn-success" href="/register" role="button">Sign up today</a></p>
-      </div>
-
-      <div class="rows">
-        <div class="col-lg-6">
-          <h4>Creators</h4>
-          <p>Developed by Will Field-Thompson, Yaseen Islam, Tak Chi Wan, Hunter Herman</p>
-	  <p>&copy; Stuyvesant High School Software Development 2013-14</p>
-        </div>
-      </div>
-
-    </div> 
-  </body>
-</html>
+    </div>
+  </div>
+{% endblock content %}
