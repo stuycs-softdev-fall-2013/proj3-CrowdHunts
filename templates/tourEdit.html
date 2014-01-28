@@ -83,6 +83,22 @@
 		height:100%;
 		background-color:#ffffff;
 	}
+	.preview {
+		height:70%;
+	}
+	.choice {
+		height:30%;
+		width:50%;
+		float:left;
+		background-color:#E3E3E3;
+		text-align:center;
+		font-size:30pt;
+		text-shadow: 0 0 20pt #000000;
+		color:#ffffff;
+	}
+	.choice#confirm {
+		background-color:#4BFF45;
+	}
 	</style>
 	</head>
 	<body>
@@ -103,11 +119,15 @@
 			<div class="submit frame" number=1>
 				<div class="preview">
 					<div class="title">
-						bla
+						
 					</div>
 					<div class="body">
 						test
 					</div>
+				</div>
+				<div class="submit">
+					<div class="choice" id="confirm"> <span class="vCentered"> Save </span> </div>
+					<div class="choice" id="deny"> <span class="vCentered">Cancel</span> </div>
 				</div>
 			</div>
 
@@ -128,9 +148,18 @@
 	<script src="../static/js/touch.js"></script>
     <script src="../static/js/streetView.js"></script>
     <script>
-    $("submit").on("viewframe") {
-    	
-    }
+    $(".submit").on("viewframe",function() {
+    	var title = $("#stopTitle")[0].value;
+    	var desc = $("#stopDescription")[0].value;
+    	console.log(this);
+    	$(this).find(".title").map(function(i,elem){
+    		console.log(elem);
+    		elem.innerHTML = title;
+    	})
+    	$(this).find(".body").map(function(i,elem){
+    		elem.innerHTML = desc;
+    	})
+    });
     console.log(env);
     </script>
 

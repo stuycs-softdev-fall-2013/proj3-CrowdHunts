@@ -29,6 +29,10 @@ function TouchUI() {
 		    	this.focus();
 		    	this.select();
 		    })
+		    $('.vCentered').map(function(i,elem) {
+		    	var lineHeight = $(elem).parent().height();
+		    	elem.style.lineHeight = lineHeight + "px";
+		    })
 		    $('.swipe-left').on("swipe",function() {
 		    	var e = event;
 		    	var max = true;
