@@ -109,11 +109,11 @@ def users_by_score():
 
 ### QUESTS ###
 
-# returns [(usern, title, desc, questid)]
+# returns [(usern, title, desc, num_stops, questid)]
 def get_quests_at_pano(panoid):
     conn = sql.connect(DB_NAME)
     c = conn.cursor()
-    c.execute("SELECT * FROM quests, stops WHERE quests.questid=stops.questid AND stops.panoid=? AND stops.indx=0", panoid)
+    c.execute("SELECT quests.* FROM quests, stops WHERE quests.questid=stops.questid AND stops.panoid=? AND stops.indx=0", (panoid,))
     ret = c.fetchall()
     conn.close()
     return ret
@@ -125,7 +125,7 @@ def get_quests_at_pano(panoid):
 def get_users_quests(usern):
     conn = sql.connect(DB_NAME)
     c = conn.cursor()
-    c.execute("SELECT title, desc, questid, num_stops FROM quests WHERE username=?",usern)
+    c.execute("SELECT title, desc, questid, num_stops FROM quests WHERE username=?", (usern,))
     ret = c.fetchall()
     conn.close()
     return ret
@@ -138,7 +138,7 @@ def get_stop(qid, index):
     c = conn.cursor()
     c.execute("SELECT * FROM stops WHERE questid=? AND indx=?", (qid, index))
     ret = c.fetchone()
-    c.execute("SELECT num_stops FROM quests WHERE questid=?", qid)
+    c.execute("SELECT num_stops FROM quests WHERE questid=?", (qid,))
     l = c.fetchone()
     conn.close()
     return (ret, l >= index)
@@ -147,7 +147,7 @@ def add_quest(stops, meta, usern):
     conn = sql.connect(DB_NAME)
     c = conn.cursor()
     vals = (usern, meta['title'], meta['desc'], len(stops))
-    c.execute("INSERT INTO quests VALUES (?, ?, ?, ?)", vals)
+    c.execute("INSERT INTO quests VALUES (?, ?, ?, ?, NULL)", vals)
     i = 0
     qid = c.lastrowid
     for s in stops:
