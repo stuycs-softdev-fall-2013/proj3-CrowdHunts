@@ -66,9 +66,10 @@ def quest():
 # POST keys:
 # title
 # desc
-@app.route('/jax/new/start')
+@app.route('/jax/new/start', methods=['POST'])
 def new_start():
-    session['new-meta'] = {'title':title, 'desc':desc}
+    session['new-meta'] = {'title':request.json.get('title'),
+                           'desc':request.json.get('desc')}
     session['new-stops'] = []
 
 # POST keys:
@@ -77,7 +78,7 @@ def new_start():
 # lat
 # lon
 # desc
-@app.route('/jax/new/addstop')
+@app.route('/jax/new/addstop', methods=['POST'])
 def new_stop():
     #add to session
     data = request.get_json()
@@ -88,7 +89,7 @@ def new_stop():
                                     data['lon'],
                                     data['panoid']))
     
-
+# GET me
 @app.route('/jax/new/end')
 def new_end():
     quest = session.pop('new-stops')
