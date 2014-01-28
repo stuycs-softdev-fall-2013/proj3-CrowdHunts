@@ -33,14 +33,21 @@ def test():
 
 ### AJAX ###
 
+# stop retrieval
+# /jax/getstop?panoid=abcd&tourid=123
+@app.route('/jax/getstop')
+def stop():
+    panoid = request.args.get('panoid')
+    tid = request.args.get('tourid')
+    
+
 # quest retrieval
-# /jax/getquest?lat=1&lon=1
+# /jax/getquest?panoid=abcd
 @app.route('/jax/getquest')
 def quest():
     #return db stuff
-    request.args.get('lat')
-    request.args.get('lon')
-    db.quest_in_prox(lat, lon)
+    panoid = request.args.get('panoid')
+    db.quest_in_prox(panoid)
 
 # POST keys:
 # title
