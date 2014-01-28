@@ -1,6 +1,34 @@
 <html>
 	<head>
 	<style>
+	body {
+		margin:0;
+	}
+	.text {
+		padding:50pt;
+		padding-top:30pt;
+		padding-bottom:30pt;
+	}
+	#title {
+		font: "Times New Roman", Times, serif;
+		color:white;
+		font-size:50pt;
+		font-style:italic;
+		text-shadow:2pt 2pt 0px #000000;
+	}
+	#description {
+		height:30%;
+		width:100%;
+		background-color: #303030;
+		opacity:.9;
+		position:fixed;
+		top:0;
+		left:0;
+
+		border-bottom:1px solid #aaaaaa;
+
+		transition:top .3s;
+	}
 	#container {
 		height:100%;
 		width:100%;
@@ -8,6 +36,7 @@
 	#main {
 		height:100%;
 		width:100%;
+		z-index:-1;
 	}
 	#test {
 		font-size: 50px;
@@ -22,7 +51,13 @@
 	</style>
 	</head>
 	<body>
-		<div id="test"></div>
+		<div id="description">
+			<div class="text">
+				<div id="title"> 
+				Test
+				</div>
+			</div>
+		</div>
 		<div id="container">
 			<div id="main" ></div>
 		</div>
@@ -33,6 +68,7 @@
     <script src="static/js/jquery-2.1.0.min.js"></script>
     
     <script src="static/js/main.js"></script>
+    <script src="static/js/touch.js"></script>
     <script src="static/js/streetView.js"></script>
 
 </html>

@@ -50,7 +50,7 @@ function StreetView(canvas) {
 		findStreetView: function(location) {
 			var self = this;
 			this.getLatLng(location,function(result) {
-				self.pano = self.getStreetViewContainer(result.d,result.e);
+				self.loadStreetView(result.d,result.e);
 			})
 		},
 		select: function(link) {
@@ -95,6 +95,9 @@ function StreetView(canvas) {
 				callback(p);
 			})
 		},
+		loadStreetView: function(lat,lng) {
+			this.pano = this.getStreetViewContainer(lat,lng);
+		},
 		getStreetViewContainer: function(lat,lng) {
 			var loc = new google.maps.LatLng(lat,lng);
 			var panoOptions = {
@@ -103,7 +106,15 @@ function StreetView(canvas) {
 					heading: 0,
 					pitch: 0,
 				},
-				zoom:0
+				zoom:0,
+
+				addressControl:false,
+				disableDefaultUI:true,
+				disableDoubleClickZoom:true,
+				scrollwheel:false,
+				zoomControl:false,
+				linksControl:false,
+
 			}
 
 			var pano = new google.maps.StreetViewPanorama(
