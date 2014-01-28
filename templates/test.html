@@ -1,0 +1,92 @@
+<html>
+	<head>
+	<meta name="viewport" content="user-scalable=1.0,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0"></meta>
+	<meta name="apple-mobile-web-app-capable" content="yes"></meta>
+	<meta name="format-detection" content="telephone=no"></meta>
+	<style>
+	body {
+		margin:0;
+	}
+	.text {
+		padding:5%;
+		font: "Times New Roman", Times, serif;
+		color:white;
+		font-size:10pt;
+		font-style:italic;
+		text-shadow:2pt 2pt 0px #000000;
+	}
+	#title {
+		margin:5pt;
+		font-size:20pt;
+		height:20%;
+	}
+	#body {
+		font-style:normal;
+		overflow:scroll;
+		height:50%;
+	}
+	#description {
+		height:30%;
+		width:100%;
+		background-color: #303030;
+		opacity:.9;
+		position:fixed;
+		top:0;
+		left:0;
+
+		border-bottom:1px solid #aaaaaa;
+
+		
+	}
+	#container {
+		height:100%;
+		width:100%;
+	}
+	#main {
+		height:100%;
+		width:100%;
+		z-index:-1;
+	}
+	#test {
+		font-size: 50px;
+	}
+	.vertical {
+		width:600;
+		float:left;
+	}
+	.vertical * {
+		float:left;
+	}
+	</style>
+	</head>
+	<body>
+		<div id="description">
+			<div class="text">
+				<div id="title"> 
+					Test
+				</div>
+				<bh />
+				<div id="body">
+				Welcome to the financial district, home of the best building in the business. Only here will you find the likes of potbelly, duane reade, and chase all within the same block. We've even got two starbucks!
+
+				In other news, somehow i have become a drone after watching the cleveland show for 30 minutes. Perhaps its just my obsession with stupid shows MKAING you stupid, but perhaps im right. Perhaps theres something outside of my control, involved in trust and learning and related to subconscious language, a language that tricks you when you watch these idiotic shows.
+
+				The cleveland show is on another level though.
+				</div>
+			</div>
+		</div>
+		<div id="container">
+			<div id="main" ></div>
+		</div>
+	</body>
+	<script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDP6aoULMAMJg1uSocCFiNg9rhMiUHyui4&sensor=false">
+    </script>
+    <script src="static/js/jquery-2.1.0.min.js"></script>
+    
+    <script src="static/js/main.js"></script>
+    <script src="static/js/phone.js"></script>
+    <script src="static/js/touch.js"></script>
+    <script src="static/js/streetView.js"></script>
+
+</html>
