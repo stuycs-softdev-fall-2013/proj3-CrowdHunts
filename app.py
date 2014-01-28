@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, request, abort, jsonify, session, make_response
 import crossdomain
 from random import choice
-import test as db
+import db
 
 app = Flask(__name__)
 app.secret_key = 'shh this is secret'
@@ -33,14 +33,35 @@ def test():
 
 ### AJAX ###
 
+# stop retrieval
+# index is the current index
+# /jax/getstop?questid=123&index=2
+#
+@app.route('/jax/getstop')
+def stop():
+    index = request.args.get('index')
+    qid = request.args.get('questid')
+    stop = db.get_stop(qid, index)
+    ret = {'title':stop[0][0],
+           'desc':stop[0][1],
+           'lat':stop[0][2],
+           'lon':stop[0][3],
+           'panoid':stop[0][4],
+           'questid':stop[0][5],
+           'index':stop[0][6],
+           'isfinal':stop[1]
+    }
+    return jsonify(**ret)
+
 # quest retrieval
-# /jax/getquest?lat=1&lon=1
+# /jax/getquest?panoid=abcd
+# returns [(usern, title, desc, questid)]
 @app.route('/jax/getquest')
 def quest():
-    #return db stuff
-    request.args.get('lat')
-    request.args.get('lon')
-    db.quest_in_prox(lat, lon)
+    panoid = request.args.get('panoid')
+    res = db.get_quests_at_pano(panoid)
+    ret = {'results':[{'usern':q[0], 'title':q[1], 'desc':q[2], 'num_stops':q[3], 'questid':q[4]} for q in res]}
+    return jsonify(**ret)
 
 # POST keys:
 # title
@@ -48,7 +69,7 @@ def quest():
 @app.route('/jax/new/start')
 def new_start():
     session['new-meta'] = {'title':title, 'desc':desc}
-    session['new-tour'] = []
+    session['new-stops'] = []
 
 # POST keys:
 # title
@@ -60,8 +81,8 @@ def new_start():
 def new_stop():
     #add to session
     data = request.get_json()
-    if 'new-tour' in session:
-        session['new-tour'].append((data['title'],
+    if 'new-stops' in session:
+        session['new-stops'].append((data['title'],
                                     data['desc'],
                                     data['lat'],
                                     data['lon'],
@@ -70,15 +91,14 @@ def new_stop():
 
 @app.route('/jax/new/end')
 def new_end():
-    tour = session.pop('new-tour')
+    quest = session.pop('new-stops')
     meta = session.pop('new-meta')
-    data = {'stops':tour, 'info':(session['usern'], meta['title'], meta['desc'])}
-    db.add_tour(data)
+    db.add_quest(quest, meta, session['usern'])
 
-# cancel a tour in progress
+# cancel a quest in progress
 @app.route('/jax/new/cancel')
 def new_cancel():
-    session.pop('new-tour')
+    session.pop('new-stops')
     session.pop('new-meta')
 
 ### LOGIN FOLLOWS ###
