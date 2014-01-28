@@ -2,13 +2,15 @@ import sqlite3 as sql
 from werkzeug.security import generate_password_hash, check_password_hash
 from math import *
 
+DB_NAME = 'crowdhunts.db'
+
 '''
 users
 |username|password|num_plays|
 
 '''
 def init_db():
-    conn=sql.connect('crowdhunts.db')
+    conn=sql.connect(DB_NAME)
     c=conn.cursor()
     c.execute("""
     CREATE TABLE users (
@@ -33,7 +35,7 @@ def init_db():
 #@params: username, password
 #@return: True
 def add_user(usernm, passwd):
-    conn=sql.connect('crowdhunts.db')
+    conn=sql.connect(DB_NAME)
     c=conn.cursor()
     temp=(usernm,generate_password_hash(passwd))
     c.execute("INSERT INTO users VALUES (?,?,0)",temp)
@@ -45,7 +47,7 @@ def add_user(usernm, passwd):
 #@params: username, old password, new password
 #@return: true if old pass correct, false otherwise
 def updt_pass(usernm, old_pass, new_pass):
-    conn=sql.connect('crowdhunts.db')
+    conn=sql.connect(DB_NAME)
     c=conn.cursor()
     temp=(usernm,)
     c.execute("SELECT * FROM users WHERE username=?",temp)
@@ -66,7 +68,7 @@ def updt_pass(usernm, old_pass, new_pass):
 #@param: username, password
 #@return: whether a registered account
 def is_valid_user(usernm,passwd):
-    conn=sql.connect('crowdhunts.db')
+    conn=sql.connect(DB_NAME)
     c=conn.cursor()
     temp=(usernm,)
     c.execute("SELECT * FROM users WHERE username=?",temp)
@@ -79,7 +81,7 @@ def is_valid_user(usernm,passwd):
 # adds a number of plays to player's total plays
 # @param: plays - number of plays to increase by
 def add_plays(usern, plays):
-    conn = sql.connect('crowdhunts.db')
+    conn = sql.connect(DB_NAME)
     c = conn.cursor()
     temp = (plays, usern)
     c.execute("UPDATE users SET num_plays=num_plays+? WHERE username=?", temp)
@@ -90,7 +92,7 @@ def add_plays(usern, plays):
 # #@params: username, num_plays
 # #@return: True
 # def add_stats(usernm, dist):
-#     conn=sql.connect('crowdhunts.db')
+#     conn=sql.connect(DB_NAME)
 #     c=conn.cursor()
 #     temp=(usernm,)
 #     c.execute("SELECT * FROM users WHERE username=?",temp)
@@ -109,7 +111,7 @@ def add_plays(usern, plays):
 #@params: username
 #@return: tuple with data minus password, None is user doesn't exist
 def get_user(usernm):
-    conn=sql.connect('crowdhunts.db')
+    conn=sql.connect(DB_NAME)
     c=conn.cursor()
     temp=(usernm,)
     c.execute("SELECT username, num_plays FROM users WHERE username=?", temp)
@@ -120,7 +122,7 @@ def get_user(usernm):
 #@params: none
 #@return: list of all users by high score
 def users_by_score():
-    conn=sql.connect('crowdhunts.db')
+    conn=sql.connect(DB_NAME)
     c=conn.cursor()
     templist=[]
     for row in c.execute("SELECT username, num_plays FROM users ORDER BY num_plays DESC"):
@@ -138,7 +140,7 @@ def users_by_score():
 #putting in tour data
 #AGHHH
 def add_tour(dic):
-    conn=sql.connect('crowdhunts.db')
+    conn=sql.connect(DB_NAME)
     c=conn.cursor()
     c.execute("SELECT tourid FROM tours DESC")
     tourid=c.fetchone()
@@ -168,12 +170,35 @@ def add_tour(dic):
     conn.close()
     return True
 
+# returns [(usern, title, desc, tourid)]
+def get_tours_at_pano(panoid):
+    conn = sql.connect(DB_NAME)
+    c = conn.cursor()
+    c.execute("SELECT * FROM tours, start WHERE tours.tourid=start.tourid AND start.panoid=?", panoid)
+    ret = c.fetchall()
+    conn.close()
+    return ret
 
-def get_tour(tourid):
-    pass #will return a dict like the one that add_tour takes in
+# def get_tour(tourid):
+#     pass #will return a dict like the one that add_tour takes in
 
-def get_users_tours(username):
-    pass #will return a list of tour tuples: [ (title, desc, tourid) ]
+# returns [(title, desc, tourid)]
+def get_users_tours(usern):
+    conn = sql.connect(DB_NAME)
+    c = conn.cursor()
+    c.execute("SELECT title, desc, tourid FROM tours WHERE username=?",usern)
+    ret = c.fetchall()
+    conn.close()
+    return ret
+
+# I don't really know enough about the db to figure out wtf is going on here
+def get_stop(panoid, tid):
+    conn = sql.connect(DB_NAME)
+    c = conn.cursor()
+    c.execute()
+    ret = c.fetchone()
+    conn.close()
+    return ret
 
 ''' NOT SURE WHATS WRONG, SOMETHING WITH THE MAX INDX CHECKING SHIT OR SOMEWHERE THERE GAH
 #getting the next step in a tour (index of start is 0, index of end is -1)
@@ -182,7 +207,7 @@ def get_users_tours(username):
 def get_next_stop( indx, tourid):
     if indx==-1:
         return None
-    conn=sql.connect('crowdhunts.db')
+    conn=sql.connect(DB_NAME)
     c=conn.cursor()
     tempp=(tourid,)
     c.execute("SELECT indx FROM cmpnt WHERE tourid=? ORDER BY indx DESC", tempp)
@@ -225,7 +250,7 @@ def get_next_stop( indx, tourid):
 #@param: geolocation (lat long) and pic data (as blob)
 #@return: true
 def add_geo_pic(lati, longi, pic):
-    conn=sql.connect('crowdhunts.db')
+    conn=sql.connect(DB_NAME)
     c=conn.cursor()
     temp=(lati,longi,pic)
     c.execute("INSERT INTO geo_pic VALUES (?,?,?)",temp)
@@ -237,7 +262,7 @@ def add_geo_pic(lati, longi, pic):
 #@param: geoloc (lat long)
 #return: pic or None
 def pic_by_loc(lati,longi):
-    conn=sql.connect('crowdhunts.db')
+    conn=sql.connect(DB_NAME)
     c=conn.cursor()
     temp=(lati,longi)
     c.execute("SELECT * FROM geo_pic WHERE latitude=? AND longitude=?",temp)
@@ -251,7 +276,7 @@ def pic_by_loc(lati,longi):
 #@param: center, "radius"
 #@return: a list of geo_pics that are in the vicinity
 def pics_in_prox(lati,longi,length):
-    conn=sql.connect('crowdhunts.db')
+    conn=sql.connect(DB_NAME)
     c=conn.cursor()
     temp=(lati, length, longi, length)
     templist=[]
@@ -265,7 +290,7 @@ def pics_in_prox(lati,longi,length):
 #@param: lat, long, newpic
 #@return: True cuz assuming precond
 def updt_geo_pic(lati,longi,newpic):
-    conn=sql.connect('crowdhunts.db')
+    conn=sql.connect(DB_NAME)
     c=conn.cursor()
     temp=(newpic,lati,longi)
     c.execute("UPDATE geo_pic SET image=? WHERE latitude=? AND longitude=?",temp)

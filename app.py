@@ -44,11 +44,12 @@ def stop():
 
 # quest retrieval
 # /jax/getquest?panoid=abcd
+# returns [(usern, title, desc, tourid)]
 @app.route('/jax/getquest')
 def quest():
     #return db stuff
     panoid = request.args.get('panoid')
-    db.tour_in_prox(panoid)
+    return json.dumps(db.get_tours_at_pano(panoid))
 
 # POST keys:
 # title
