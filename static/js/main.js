@@ -17,10 +17,12 @@ function main(p) {
 	sv.loadStreetView(p.coords.latitude,p.coords.longitude);
 	sv.setPov(0,0,0);
 	glob = sv;
-	tM = new TouchManager(500);
+	tM = new TouchManager(150,20);
 	tM.init();
 	glTM = tM;
 
+	steady($("#container")[0]);
+	steady(canvas[0]);
 	//glTM = tM;
 	document.addEventListener("tap",function() {
 		var t = $("#description")[0].style.top;

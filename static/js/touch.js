@@ -1,3 +1,19 @@
+function steady(elem) {
+	elem.addEventListener('touchstart', function(event){
+	    this.allowUp = (this.scrollTop > 0);
+	    this.allowDown = (this.scrollTop < this.scrollHeight - this.clientHeight);
+	    this.prevTop = null; this.prevBot = null;
+	    this.lastY = event.pageY;
+	});
+
+	elem.addEventListener('touchmove', function(event){
+	    var up = (event.pageY > this.lastY), down = !up;
+	    this.lastY = event.pageY;
+
+	    if ((up && this.allowUp) || (down && this.allowDown)) event.stopPropagation();
+	    else event.preventDefault();
+	});
+}
 function partial(func) {
 	var args = Array.prototype.slice.call(arguments, 1);
 	return function() {
@@ -5,7 +21,7 @@ function partial(func) {
 		return func.apply(this, allArguments);
 	};
  }
-function TouchManager(tapLength) {
+function TouchManager(tapLength,fingerWidth) {
 	var touches = [];
 
 	var TapEvent = function(touch,duration) {
@@ -24,11 +40,17 @@ function TouchManager(tapLength) {
 	var ans = {
 		touches: [],
 		tapLength: tapLength,
+		tapSize: fingerWidth,
 		TapEvent: TapEvent,
 
 		init: function() {
 			document.addEventListener("touchstart",this.touchStartHandler(),false)
 			document.addEventListener("touchend",this.touchEndHandler(),false)
+			document.addEventListener("touchmove",this.touchMoveHandler,false)
+		},
+		touchMoveHandler: function() {
+			//console.log(event);
+			//$("#description")[0].style.top = event.changedTouches[0].screenY + "px";
 		},
 		sendTapEvent: function(touch,duration) {
 			var e = new TapEvent(touch,duration);
@@ -47,11 +69,28 @@ function TouchManager(tapLength) {
 						start:time,
 						touch:null
 					};
-					t.touch = e.changedTouches.item(i);
+					var touchInit = {};
+					$.extend(touchInit,e.changedTouches.item(i));
+					t.touch = touchInit;
+								console.log(event.changedTouches[i].screenY);
+
 					//$("#test")[0].innerHTML = this.touches;
 					self.touches.push(t);
 				}
 			}
+		},
+		isTap: function(touch1,touch2,duration) {
+			if(touch1.radiusY == undefined) {
+				touch1.radiusY = this.tapSize;
+			}
+			if(touch1.radiusX == undefined) {
+				touch1.radiusX = this.tapSize;
+			}
+			console.log(touch1.radiusY);
+			if(Math.abs(touch1.screenX - touch2.screenX) > touch1.radiusX / 2 || Math.abs(touch1.screenY - touch2.screenY) > touch1.radiusY / 2 || duration > this.tapLength) {
+				return false;
+			}
+			return true;
 		},
 		touchEndHandler: function(e) {
 			var self = this;
@@ -64,8 +103,12 @@ function TouchManager(tapLength) {
 
 						var touch = self.touches[y];
 						if(touch.touch.identifier == destroyed.identifier) {
+										console.log(touch.touch.screenY);
+
 							var out = self.touches.splice(y,1)[0];
-							if(time - touch.start < tapLength) {
+
+							if(self.isTap(out.touch,e.changedTouches[i],time - touch.start)) {
+
 								self.sendTapEvent(out.touch,time-out.start);
 							}
 							y--;
