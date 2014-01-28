@@ -87,6 +87,14 @@ function enableBasicUI() {
     		this.style.left = "-100%";
     	}*/
     })
+    $('.frame').map(function(i,elem) {
+    	console.log(i);
+    	if(elem.hasAttribute("number")) {
+    		elem.style.left = parseInt(elem.getAttribute("number")) * 100 + "%";
+    		console.log(elem.getAttribute("number"));
+    	}
+    });
+
     $('.swipe-left').on("touchend",function() {
     	if(this.swipeLeft && this.swipeLeft != undefined) {
     		this.swipeLeft = false;

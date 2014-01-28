@@ -27,7 +27,11 @@ html {
 	width:100%;
 	z-index:-1;
 }
-
+.frame {
+	position:absolute;
+	top:0;
+	right:0;
+}
 input,textarea {
 	-webkit-appearance: none;
 	border-radius:0;
