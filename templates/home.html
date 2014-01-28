@@ -1,0 +1,101 @@
+<html>
+<head>
+	<meta name="viewport" content="user-scalable=1.0,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="format-detection" content="telephone=no">
+    <link href="../static/css/bootstrap.css" rel="stylesheet">
+    <style>
+    body {
+    	
+    	background-color:#FA5941;
+    	opacity:.95;
+    }
+    hr {
+    	border-top-width: 0;
+    }
+    .scrollable {
+    }
+    .builder {
+    	position:absolute;
+    	top:0;
+    	left:0;
+    	right:0;
+    	height:auto;
+    	margin:20pt;
+    }
+    .field {
+    	width:100%;
+    	padding:0pt;
+    	margin-bottom:25pt;
+    }
+    .label {
+    	margin:0;
+    	color:white;
+    	font-style:italic;
+    	font-size:25pt;
+    	margin-bottom:10pt;
+    }
+    .creator {
+		font-size:17pt;
+		padding:10pt;
+    }
+    .save {
+    	position:absolute;
+    	top:40%;
+    	width:100%;
+    	text-align: center;
+    	color:white;
+    	font-size:30pt;
+		text-shadow:0 0 20pt rgba(0,0,0,10);
+
+    }
+    .prompt {
+    }
+    .response {
+		text-shadow:0 0 20pt rgba(0,0,0,10);
+
+    	font-size: 25pt;
+    }
+    .choice {
+		text-shadow:0 0 20pt rgba(0,0,0,10);
+    	margin:5pt;
+    }
+    #confirm {
+    	color:#4BFF45;
+    }
+    .confirmation {
+    	position:absolute;
+    	top:0;
+    	right:0;
+    	text-align: center;
+    	width:100%;
+    	height:100%;
+    	background-color:#4BFF45;
+    	color:white;
+    	font-size:20pt;
+    	font-style:italic;
+		text-shadow:0 0 20pt rgba(0,0,0,10);
+    }
+    .gratz {
+    	position:relative;
+
+    	top:40%;
+    }
+    textarea.creator {
+    	min-height:80pt;
+    }
+
+    </style>
+
+</head>
+	<body>
+	  <div class="row">
+	    <br>
+	    <br>
+	    <div class="col-md-10 col-xs-10 col-md-offset-1 col-md-offset-1">
+	     <button type="button" onclick="location.href='/create/tour';" class="btn btn-default btn-lg btn-block">Create</button>
+	     <br>
+	     <button type="button" onclick="location.href='/play';" class="btn btn-default btn-lg btn-block">Play</button>
+	    </div>
+	</body>
+</html>

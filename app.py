@@ -13,6 +13,13 @@ def index():
     else:
         return redirect('/home')
 
+@app.route('/home')
+def home():
+    if not 'usern' in session:
+        return redirect('/')
+    else:
+        return render_template('home.html')
+
 # not very fun. we won't mention it, but we'll leave it there in case anyone's interested
 @app.route('/leaderboard')
 def leaders():
@@ -90,6 +97,8 @@ def new_start():
     session['new-meta'] = {'title':request.json.get('title'),
                            'desc':request.json.get('desc')}
     session['new-stops'] = []
+    ret = {'received':True}
+    return jsonify(**ret)
 
 # POST keys:
 # title
@@ -107,6 +116,8 @@ def new_stop():
                                      data['lat'],
                                      data['lon'],
                                      data['panoid']))
+    ret = {'received':True}
+    return jsonify(**ret)
     
 # GET me
 @app.route('/jax/new/end')
@@ -114,12 +125,16 @@ def new_end():
     quest = session.pop('new-stops')
     meta = session.pop('new-meta')
     db.add_quest(quest, meta, session['usern'])
+    ret = {'received':True}
+    return jsonify(**ret)
 
 # cancel a quest in progress
 @app.route('/jax/new/cancel')
 def new_cancel():
     session.pop('new-stops')
     session.pop('new-meta')
+    ret = {'received':True}
+    return jsonify(**ret)
 
 ### LOGIN FOLLOWS ###
 
