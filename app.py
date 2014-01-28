@@ -26,6 +26,10 @@ def play():
     require_login()
     return render_template('game.html')
 
+@app.route('/create/tour')
+def createToure():
+    return render_template('tourInit.html')
+
 @app.route('/test',methods=['GET','OPTIONS'])
 @crossdomain.crossdomain(origin="*",headers='Content-Type,origin,accept,contentType')
 def test():

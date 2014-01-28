@@ -21,15 +21,17 @@ function main(p) {
 	tM = new TouchManager(150,20,.75);
 	tM.init();
 	glTM = tM;
-
+	enableBasicUI();
 	//steady($("#container")[0]);
 	//steady($("#description")[0]);
 	//steady(canvas[0]);
 	//glTM = tM;
 	//$(document).bind("touchmove",false);
-	$(document).on('touchmove', function (e) {
-         e.preventDefault();
-	 });
+//	$(document).on('touchmove', function (e) {
+  //       e.preventDefault();
+//	 });
+	//example code
+	/*
 	var desc = $("#description");
 	desc.on("drag", function() {
 		console.log("received")
@@ -51,7 +53,33 @@ function main(p) {
 		}
 		//$("#test")[0].innerHTML = "tapped" + Math.random();
 	})
+*/t
 	//navigatorLoop();
+}
+function switchMode(mode) {
+	
+}
+function enableBasicUI() {
+    $('.scrollable').on("drag",function() {
+    	var e = event
+    	var top = jQuery(this).scrollTop();
+    	jQuery(this).scrollTop(top + e.detail.instantaneous.distance.y);
+    })
+    $('input,textarea').on("tap",function() {
+    	this.focus();
+    	this.select();
+    })
+    $('.swipe-left').on("swipe",function() {
+    	var e = event;
+    	if(Math.abs(e.detail.instantaneous.angle - 175) < 10) {
+    		this.style.left = "-100%";
+    		this.swiped = true;
+    	}
+    	console.log(e.detail.instantaneous.angle)
+    	/*if(e.detail.instantaneous.direction.x < 0) {
+    		this.style.left = "-100%";
+    	}*/
+    })
 }
 
 function navigatorLoop() {

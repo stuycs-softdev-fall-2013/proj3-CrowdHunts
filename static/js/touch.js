@@ -125,19 +125,30 @@ function TouchManager(tapLength,fingerWidth,swipeSpeed) {
 				x: 	touch1.screenX - touch2.screenX,
 				y: 	touch1.screenY - touch2.screenY 
 			}
+			var change = {
+				x: touchRecent.screenX - touch2.screenX,
+				y: touchRecent.screenY - touch2.screenY
+			}
+			var xD = touchRecent.screenX - touch2.screenX;			
+			var yD = touchRecent.screenY - touch2.screenY;
+
+			var vX = (touchRecent.screenX - touch2.screenX)/(time - touchRecent.time);
+			var vY = (touchRecent.screenY - touch2.screenY)/(time - touchRecent.time);
+
+			var adjustment = -360 * (Math.abs(yD)/(yD) - 1)/2 + -180 * (Math.abs(xD)/xD - 1)/2
 			var inst = {
+				angle:180 * Math.atan(yD/xD)/Math.PI + adjustment,
 				distance: {
-					x: touchRecent.screenX - touch2.screenX,
-					y: touchRecent.screenY - touch2.screenY
+					x: xD,
+					y: yD
 				},
 				duration:time - touchRecent.time,
 				speed: {
-					vx: (touchRecent.screenX - touch2.screenX)/(time - touchRecent.time),
-					vy: (touchRecent.screenY - touch2.screenY)/(time - touchRecent.time)
+					vx: vX,
+					vy: vY
 				}
 			}
 			var e = new DragEvent(distance,inst,duration,touch1,touch2);
-
 			console.log(e);
 			touch1.target.dispatchEvent(e);
 			return e;
@@ -151,15 +162,22 @@ function TouchManager(tapLength,fingerWidth,swipeSpeed) {
 				x: touchRecent.screenX - touch2.screenX,
 				y: touchRecent.screenY - touch2.screenY
 			}
+			var xD = touchRecent.screenX - touch2.screenX;			
+			var yD = touchRecent.screenY - touch2.screenY;
+
+			var vX = (touchRecent.screenX - touch2.screenX)/(time - touchRecent.time);
+			var vY = (touchRecent.screenY - touch2.screenY)/(time - touchRecent.time);
+
 			var inst = {
+				angle:180 * Math.atan2(yD,xD)/Math.PI + 180,
 				distance: {
-					x: touchRecent.screenX - touch2.screenX,
-					y: touchRecent.screenY - touch2.screenY
+					x: xD,
+					y: yD
 				},
 				duration:time - touchRecent.time,
 				speed: {
-					vx: (touchRecent.screenX - touch2.screenX)/(time - touchRecent.time),
-					vy: (touchRecent.screenY - touch2.screenY)/(time - touchRecent.time)
+					vx: vX,
+					vy: vY
 				}
 			}
 			var e = new SwipeEvent(distance,inst,duration,touch1,touch2);
@@ -171,7 +189,7 @@ function TouchManager(tapLength,fingerWidth,swipeSpeed) {
 			var xSpeed = speed(touch1.screenX,touch2.screenX,duration);
 			var ySpeed = speed(touch1.screenY,touch2.screenY,duration);
 
-			return Math.sqrt(Math.pow(xSpeed,2) + Math.pow(ySpeed,2)) >= this.swipeSpeed;
+			return Math.abs(xSpeed) >= this.swipeSpeed || Math.abs(ySpeed) >= this.swipeSpeed //|| Math.sqrt(Math.pow(xSpeed,2) + Math.pow(ySpeed,2)) >= this.swipeSpeed;
 		},
 		isDrag: function(touch1,touch2,duration) {
 			var xSpeed = speed(touch1.screenX,touch2.screenX,duration);
