@@ -8,18 +8,15 @@ app.secret_key = 'shh this is secret'
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    if not 'usern' in session:
+        return render_template('index.html')
+    else:
+        return redirect('/u/'+session['usern'])
 
 @app.route('/leaderboard')
 def leaders():
     leaders = db.users_by_score()
     return render_template('leaderboard.html', leaders=leaders)
-
-# user profile page
-@app.route('/u/<usern>')
-def profile(usern):
-    user = db.get_user(usern)
-    return render_template('user.html', user=usern)
 
 @app.route('/play')
 def play():

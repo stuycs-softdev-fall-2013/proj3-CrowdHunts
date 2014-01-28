@@ -80,7 +80,7 @@ def add_plays(usern, plays):
     c = conn.cursor()
     temp = (plays, usern)
     c.execute("UPDATE users SET num_plays=num_plays+? WHERE username=?", temp)
-    c.commit()
+    conn.commit()
     conn.close()
 
 #simply getting user data in a tuple

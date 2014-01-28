@@ -1,20 +1,22 @@
 {% extends "base.html" %}
 {% block title %}Leaders{% endblock title %}
 {% block content %}
-  <table class="table">
-    <thead>
-      <tr>
-        <th>User</th>
-        <th>Score</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for i in leaders %}
+  <div class="container">
+    <table class="table table-striped table-bordered table-responsive">
+      <thead>
         <tr>
-          <td>{{i[0]}}</td>
-          <td>{{i[1]}} </td>
+          <th>User</th>
+          <th>Score</th>
         </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        {% for i in leaders %}
+          <tr>
+            <td>{{i[0]}}</td>
+            <td>{{i[1]}} </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 {% endblock content %}
