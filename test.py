@@ -3,13 +3,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from math import *
 
 '''
-initializes 2 db's
-
 users
-|username|password|total_dist|avg_score|num_plays|high_score|
+|username|password|num_plays|
 
-geo_pic
-|latitutde|longitude|image|
 '''
 def init_db():
     conn=sql.connect('crowdhunts.db')
@@ -18,10 +14,7 @@ def init_db():
     CREATE TABLE users (
     username text,
     password text,
-    total_dist real,
-    avg_score real,
-    num_plays real,
-    high_score real
+    num_plays real
     )""")
     c.execute("CREATE TABLE start (title text, desc text, lat real, lon real, panoid text, tourid int, indx int)")
     c.execute("CREATE TABLE cmpnt (title text, desc text, lat real, lon real, panoid text, tourid int, indx int)")
@@ -43,7 +36,7 @@ def add_user(usernm, passwd):
     conn=sql.connect('crowdhunts.db')
     c=conn.cursor()
     temp=(usernm,generate_password_hash(passwd))
-    c.execute("INSERT INTO users VALUES (?,?,0,0,0,0)",temp)
+    c.execute("INSERT INTO users VALUES (?,?,0)",temp)
     conn.commit()
     conn.close()
     return True
@@ -83,24 +76,34 @@ def is_valid_user(usernm,passwd):
         return False
     return check_password_hash(temp_user[1],passwd)
 
-#add one game's stats
-#@params: username, total distance traveled, game score
-#@return: True
-def add_stats(usernm, dist, score):
-    conn=sql.connect('crowdhunts.db')
-    c=conn.cursor()
-    temp=(usernm,)
-    c.execute("SELECT * FROM users WHERE username=?",temp)
-    temp_data=c.fetchone()
-    new_high_score=score
-    if score<temp_data[5]:
-        new_high_score=temp_data[5]
-    new_user_data=(temp_data[0],temp_data[1],temp_data[2]+dist,(temp_data[3]*(temp_data[4])+score)/(temp_data[4]+1),temp_data[4]+1, new_high_score)
-    c.execute("DELETE FROM users WHERE username=?", temp)
-    c.execute("INSERT INTO users VALUES (?,?,?,?,?,?)",new_user_data)
-    conn.commit()
+# adds a number of plays to player's total plays
+# @param: plays - number of plays to increase by
+def add_plays(usern, plays):
+    conn = sql.connect('crowdhunts.db')
+    c = conn.cursor()
+    temp = (plays, usern)
+    c.execute("UPDATE users SET num_plays=num_plays+? WHERE username=?", temp)
+    c.commit()
     conn.close()
-    return True
+
+# #add one game's stats
+# #@params: username, num_plays
+# #@return: True
+# def add_stats(usernm, dist):
+#     conn=sql.connect('crowdhunts.db')
+#     c=conn.cursor()
+#     temp=(usernm,)
+#     c.execute("SELECT * FROM users WHERE username=?",temp)
+#     temp_data=c.fetchone()
+#     new_high_score=score
+#     if score<temp_data[5]:
+#         new_high_score=temp_data[5]
+#     new_user_data=(temp_data[0],temp_data[1],temp_data[2]+dist,(temp_data[3]*(temp_data[4])+score)/(temp_data[4]+1),temp_data[4]+1, new_high_score)
+#     c.execute("DELETE FROM users WHERE username=?", temp)
+#     c.execute("INSERT INTO users VALUES (?,?,?,?,?,?)",new_user_data)
+#     conn.commit()
+#     conn.close()
+#     return True
 
 #simply getting user data in a tuple
 #@params: username
@@ -109,7 +112,7 @@ def get_user(usernm):
     conn=sql.connect('crowdhunts.db')
     c=conn.cursor()
     temp=(usernm,)
-    c.execute("SELECT username, total_dist, avg_score, num_plays, high_score FROM users WHERE username=?", temp)
+    c.execute("SELECT username, num_plays FROM users WHERE username=?", temp)
     temp_data=c.fetchone()
     return temp_data
 
@@ -120,7 +123,7 @@ def users_by_score():
     conn=sql.connect('crowdhunts.db')
     c=conn.cursor()
     templist=[]
-    for row in c.execute("SELECT username, high_score FROM users ORDER BY high_score DESC"):
+    for row in c.execute("SELECT username, num_plays FROM users ORDER BY num_plays DESC"):
         templist.append(row)
     conn.close()
     return templist
