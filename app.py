@@ -60,7 +60,7 @@ def stop():
 def quest():
     panoid = request.args.get('panoid')
     res = db.get_quests_at_pano(panoid)
-    ret = {'results':[{'usern':q[0], 'title':q[1], 'desc':q[2], 'questid':q[3]} for q in res]}
+    ret = {'results':[{'usern':q[0], 'title':q[1], 'desc':q[2], 'num_stops':q[3], 'questid':q[4]} for q in res]}
     return jsonify(**ret)
 
 # POST keys:
