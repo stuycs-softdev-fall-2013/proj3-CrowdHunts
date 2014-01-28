@@ -11,7 +11,7 @@ def index():
     if not 'usern' in session:
         return render_template('index.html')
     else:
-        return "loggen id"
+        return redirect('/home')
 
 # not very fun. we won't mention it, but we'll leave it there in case anyone's interested
 @app.route('/leaderboard')
@@ -117,7 +117,7 @@ def new_cancel():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if 'usern' in session:
-        return redirect('/')
+        return redirect('/home')
     if request.method == 'GET':
         return render_template('login.html',error="")
     else:
@@ -126,7 +126,7 @@ def login():
         passw = request.form['passw']
         if db.is_valid_user(usern, passw):
             session['usern'] = usern
-            return redirect('/')
+            return redirect('/home')
         else:
             return render_template('login.html', error='Username and password do not match')
 
