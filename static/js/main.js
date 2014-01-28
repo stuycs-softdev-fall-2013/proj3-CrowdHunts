@@ -94,7 +94,7 @@ function enableBasicUI() {
     		this.style.left = "0";
     	}
     	if(this.getAttribute('min')) {
-    		min = (-1 * parseInt(this.style.left) / 100 = parseInt(this.getAttribute('min')));
+    		min = (-1 * parseInt(this.style.left) / 100 > parseInt(this.getAttribute('min')));
     	}
     	console.log(this.getAttribute('min'));
     	console.log(min);
