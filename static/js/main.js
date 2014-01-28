@@ -32,6 +32,7 @@ function main(p) {
 						}
 					}
 					console.log(self);
+					console.log("new loop:");
 					self.navigatorLoop();
 				}
 			}
@@ -55,7 +56,10 @@ function navigatorLoop() {
 $(document).ready(function() {
 	navigator.geolocation.getCurrentPosition(function (p) {
 		env = main(p);
-		//env.navigatorLoop();
+		env.navigatorLoop();
+		$(document).on("locationchange",function() {
+			console.log(event);
+		})
 	})
 
 });
