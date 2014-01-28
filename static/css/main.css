@@ -1,0 +1,26 @@
+body {
+	margin:0;
+	padding:0;
+}
+body * {
+	font: "Times New Roman", Times, serif;
+
+}
+* {
+	font-family: "Times New Roman", Times, serif;
+
+}
+html {
+	margin:0;
+	padding:0;
+}
+#container {
+		height:100%;
+		width:100%;
+	}
+#main {
+
+	height:100%;
+	width:100%;
+	z-index:-1;
+}

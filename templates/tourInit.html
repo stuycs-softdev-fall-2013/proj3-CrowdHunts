@@ -1,0 +1,201 @@
+<html>
+<head>
+	<meta name="viewport" content="user-scalable=1.0,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="format-detection" content="telephone=no">
+    <link href="../static/css/main.css" rel="stylesheet">
+    <style>
+    .swipe-left {
+    	position:fixed;
+    	width:100%;
+    	height:100%;
+    	top:0px;
+    	left:0px;
+    	background-color:#FA5941;
+    	opacity:.95;
+    	transition:.5s left,.8s opacity;
+    }
+    hr {
+    	border-top-width: 0;
+    }
+    .scrollable {
+    }
+    .builder {
+    	position:absolute;
+    	top:0;
+    	left:0;
+    	right:0;
+    	height:auto;
+    	margin:20pt;
+    }
+    .field {
+    	width:100%;
+    	padding:0pt;
+    	margin-bottom:25pt;
+    }
+    .label {
+    	margin:0;
+    	color:white;
+    	font-style:italic;
+    	font-size:25pt;
+    	margin-bottom:10pt;
+    }
+    .creator {
+    	-webkit-appearance: none;
+    	border-radius:0;
+    	box-shadow:0;
+    	color:#303030;
+    	font-family: Arial,Helvetica,sans-serif;
+    	width:100%;
+    	font-size:17pt;
+    	padding:10pt;
+    	margin:0;
+    	border:0;
+    }
+    .save {
+    	position:absolute;
+    	top:40%;
+    	right:0;
+    	text-align: center;
+    	width:100%;
+    	left:100%;
+    	color:white;
+    	font-size:30pt;
+		text-shadow:0 0 20pt rgba(0,0,0,10);
+
+    }
+    .prompt {
+    }
+    .response {
+		text-shadow:0 0 20pt rgba(0,0,0,10);
+
+    	font-size: 25pt;
+    }
+    .choice {
+		text-shadow:0 0 20pt rgba(0,0,0,10);
+    	margin:5pt;
+    }
+    #confirm {
+    	color:#4BFF45;
+    }
+    .confirmation {
+    	position:absolute;
+    	top:0;
+    	right:0;
+    	text-align: center;
+    	width:100%;
+    	height:100%;
+    	left:200%;
+    	background-color:#4BFF45;
+    	color:white;
+    	font-size:20pt;
+    	font-style:italic;
+		text-shadow:0 0 20pt rgba(0,0,0,10);
+    }
+    .gratz {
+    	position:relative;
+
+    	top:40%;
+    }
+    textarea.creator {
+    	min-height:80pt;
+    }
+
+    </style>
+</head>
+	<body>
+		<div class="swipe-left scrollable">
+
+			<div class="builder scrollable">
+				<div class = "field">
+					<div class = "label">
+						Create a Quest
+					</div>
+				</div>
+				<hr>
+				<div class="field">
+					<div class="label">Title</div>
+					<input class="creator" id="questTitle" type="text" />
+				</div>	
+				<div class="field">
+					<div class="label">Description</div>
+					<textarea class="creator" id="questDescription" type="text"></textarea>
+				</div>
+				
+			</div>
+			<div class="save">
+				<div class="prompt">
+					begin your quest?
+				</div>
+				<div class="response">
+					<span class="choice" id="confirm" onclick="createQuest()"> yes</span>
+					<span class="choice" id="deny"> no</span>
+				</div>
+			</div>
+			<div class="confirmation">
+				<div class="gratz">
+				good choice.
+				</div>
+			</div>
+		</div>
+
+		<div id="main"></div>
+	</body>
+	<script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDP6aoULMAMJg1uSocCFiNg9rhMiUHyui4&sensor=false">
+    </script>
+    <script src="../static/js/jquery-2.1.0.min.js"></script>
+    <script src="../static/js/main.js"></script>
+    <script src="../static/js/phone.js"></script>
+    <script src="../static/js/touch.js"></script>
+    <script src="../static/js/streetView.js"></script>
+
+    <script>
+    /*$(".swipe-left").on("drag",function() {
+    	if(this.left == undefined) {
+    		this.left = -1;
+    	}
+    	this.style.transition = "left 0s"
+    	var change = event.detail.instantaneous.distance.x;
+    	if(Math.abs(change) < 10)
+    		this.left -=  change / Math.abs(this.left/10)
+    	this.style.left = this.left + "px";
+    	//this.style.transition = "left .5s"
+    })
+    $(".swipe-left").on("touchend",function() {
+     	this.style.transition = "left .5s"
+    	if(this.swiped != undefined && this.swiped) {
+
+    	}
+    	else {
+    		this.style.left = "0%";
+	    	this.left = -1;
+    	}
+
+    })*/
+	$("#confirm").on("tap",function() {
+		var title = $("#questTitle")[0].value;
+		var desc = $("#questDescription")[0].value;
+		var url = "/jax/new/start";
+    	var par = $(".swipe-left")[0]
+    	par.style.left = "-200%";
+		$.post(url,{
+			title:title,
+			desc:desc,
+			success: function() {
+			window.setTimeout(function() {
+				$(".swipe-left")[0].style.opacity = "0";
+				window.setTimeout(function() {
+					window.location.href = "/create/edit";
+				},1000)
+			},1000)
+		}})
+	})
+    $("#deny").on("tap",function() {
+    	var e = event
+    	var par = $(".swipe-left")[0]
+    	par.style.left = "0%";
+    	par.swiped = false;
+    })
+    </script>
+</html>
