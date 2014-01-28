@@ -14,6 +14,8 @@ function steady(elem) {
 	    else event.preventDefault();
 	});
 }
+
+
 function partial(func) {
 	var args = Array.prototype.slice.call(arguments, 1);
 	return function() {
@@ -27,6 +29,7 @@ function speed(x1,x2,duration) {
 
 function TouchManager(tapLength,fingerWidth,swipeSpeed) {
 	var touches = [];
+	var recent = [];
 
 	var TapEvent = function(touch,duration) {
 		return new CustomEvent("tap",
@@ -55,12 +58,33 @@ function TouchManager(tapLength,fingerWidth,swipeSpeed) {
 				cancelable:false
 			})
 	}*/
-	var DragEvent = function(distances,duration,touchInit,touchCurrent) {
+	var DragEvent = function(distances,inst,duration,touchInit,touchCurrent) {
 		return new CustomEvent("drag",
 		{
 			detail: {
 				distances:distances,
-				speeds: {
+				instantaneous: inst,
+				speed: {
+					xv: distances.x / duration,
+					yv: distances.y / duration
+				},
+				time:duration,
+				touches: {
+					init:touchInit,
+					current:touchCurrent
+				}
+			},
+			bubbles:true,
+			cancelable:false
+		})
+	}	
+	var SwipeEvent = function(distances,inst,duration,touchInit,touchCurrent) {
+		return new CustomEvent("swipe",
+		{
+			detail: {
+				distances:distances,
+				instantaneous:inst,
+				speed: {
 					xv: distances.x / duration,
 					yv: distances.y / duration
 				},
@@ -78,6 +102,7 @@ function TouchManager(tapLength,fingerWidth,swipeSpeed) {
 
 	var ans = {
 		touches: [],
+		recentTouches: {},
 		tapLength: tapLength,
 		tapSize: fingerWidth,
 		swipeSpeed: swipeSpeed,
@@ -95,22 +120,63 @@ function TouchManager(tapLength,fingerWidth,swipeSpeed) {
 			touch.target.dispatchEvent(e);
 			return e;
 		},
-		sendDragEvent: function(duration,touch1,touch2) {
+		sendDragEvent: function(duration,time,touch1,touchRecent,touch2) {
 			var distance = {
 				x: 	touch1.screenX - touch2.screenX,
 				y: 	touch1.screenY - touch2.screenY 
 			}
-			var e = new DragEvent(distance,duration,touch1,touch2);
+			var inst = {
+				distance: {
+					x: touchRecent.screenX - touch2.screenX,
+					y: touchRecent.screenY - touch2.screenY
+				},
+				duration:time - touchRecent.time,
+				speed: {
+					vx: (touchRecent.screenX - touch2.screenX)/(time - touchRecent.time),
+					vy: (touchRecent.screenY - touch2.screenY)/(time - touchRecent.time)
+				}
+			}
+			var e = new DragEvent(distance,inst,duration,touch1,touch2);
 
 			console.log(e);
 			touch1.target.dispatchEvent(e);
 			return e;
 		},
+		sendSwipeEvent: function(duration,time,touch1,touchRecent,touch2) {
+			var distance = {
+				x: 	touch1.screenX - touch2.screenX,
+				y: 	touch1.screenY - touch2.screenY 
+			}
+			var change = {
+				x: touchRecent.screenX - touch2.screenX,
+				y: touchRecent.screenY - touch2.screenY
+			}
+			var inst = {
+				distance: {
+					x: touchRecent.screenX - touch2.screenX,
+					y: touchRecent.screenY - touch2.screenY
+				},
+				duration:time - touchRecent.time,
+				speed: {
+					vx: (touchRecent.screenX - touch2.screenX)/(time - touchRecent.time),
+					vy: (touchRecent.screenY - touch2.screenY)/(time - touchRecent.time)
+				}
+			}
+			var e = new SwipeEvent(distance,inst,duration,touch1,touch2);
+			console.log(e);
+			touch1.target.dispatchEvent(e);
+			return e;
+		},
+		isSwipe: function(touch1,touch2,duration) {
+			var xSpeed = speed(touch1.screenX,touch2.screenX,duration);
+			var ySpeed = speed(touch1.screenY,touch2.screenY,duration);
 
+			return Math.sqrt(Math.pow(xSpeed,2) + Math.pow(ySpeed,2)) >= this.swipeSpeed;
+		},
 		isDrag: function(touch1,touch2,duration) {
 			var xSpeed = speed(touch1.screenX,touch2.screenX,duration);
 			var ySpeed = speed(touch1.screenY,touch2.screenY,duration);
-			return !this.isTap(touch1,touch2,duration) && Math.abs(xSpeed) < this.swipeSpeed && Math.abs(ySpeed) < this.swipeSpeed;
+			return !this.isTap(touch1,touch2,duration) && Math.sqrt(Math.pow(xSpeed,2) + Math.pow(ySpeed,2)) < this.swipeSpeed;
 		},
 		isTap: function(touch1,touch2,duration) {
 			if(touch1.radiusY == undefined) {
@@ -124,6 +190,14 @@ function TouchManager(tapLength,fingerWidth,swipeSpeed) {
 			}
 			return true;
 		},
+		findTouch: function(id,touchList) {
+			var i =0;
+			for(var i = 0; i < touchList.length;i++) {
+				if(id == touchList[i].identifier) {
+					return i;
+				}
+			}
+		},
 		mapToMatchingTouches: function(touchList,e,func) {
 			for(var i = 0; i < touchList.length;i++) {
 					var target = touchList[i]
@@ -136,13 +210,31 @@ function TouchManager(tapLength,fingerWidth,swipeSpeed) {
 					}
 				}
 		},
+		touchListMap: function(touchList,func) {
+			for(var i = 0; i < touchList.length; i++) {
+				func(touchList[i],i,this)
+			}
+		},
+		setRecentTouches: function(touchList,time) {
+			this.recentTouches = {};
+			this.recentTouches.length = 0;
+			this.touchListMap(touchList, function(item,index,self) {
+				self.recentTouches.length++;
+				self.recentTouches[index] = {
+					screenX:item.screenX,
+					screenY:item.screenY,
+					time:time,
+					identifier:item.identifier
+				}
+			});
+		},
 		touchStartHandler: function() {
 			var self = this;
 			return function(e) {
 				console.log("touch detected");
 				event.preventDefault();
-
 				var time = new Date().getTime();
+				self.setRecentTouches(e.touches,time);
 				for(var i = 0; i < e.changedTouches.length;i++) {
 					//$("#test")[0].innerHTML += "Math.random()" + time;
 
@@ -169,12 +261,19 @@ function TouchManager(tapLength,fingerWidth,swipeSpeed) {
 				self.mapToMatchingTouches(e.changedTouches,e,function(e,i,y) {
 					var moved = self.touches[y];
 					var newT = e.changedTouches[i];
+					var recent = self.recentTouches[self.findTouch(moved.touch.identifier,self.recentTouches)]; 
+
 					var duration = time - moved.start;
 					if(self.isDrag(moved.touch,newT,duration)) {
-						self.sendDragEvent(duration,moved.touch,newT);
+						self.sendDragEvent(duration,time,moved.touch,recent,newT);
+					}
+					if(self.isSwipe(moved.touch,newT,duration)) {
+						self.sendSwipeEvent(duration,time,moved.touch,recent,newT);
 					}
 
 				})
+				self.setRecentTouches(e.touches,time);
+
 			}
 			//console.log(event);
 			//$("#description")[0].style.top = event.changedTouches[0].screenY + "px";
@@ -184,16 +283,15 @@ function TouchManager(tapLength,fingerWidth,swipeSpeed) {
 			return function(e) {
 				var time = new Date().getTime();
 				self.mapToMatchingTouches(e.changedTouches,e,function(e,i,y) {
-							
+							self.setRecentTouches(e.touches,time);
+
 							var out = self.touches.splice(y,1)[0];
 
 							if(self.isTap(out.touch,e.changedTouches[i],time - out.start)) {
 
 								self.sendTapEvent(out.touch,time-out.start);
 							}
-							if(self.isDrag(out.touch,e.changedTouches[i],time-out.start)) {
-								self.sendDragEvent(time-out.start,out.touch,e.changedTouches[i]);	
-							}
+							
 							y--;
 				})
 			}

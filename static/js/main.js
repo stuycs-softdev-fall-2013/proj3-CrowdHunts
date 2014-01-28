@@ -18,7 +18,7 @@ function main(p) {
 	sv.setPov(0,0,0);
 	sv.enableOrientationControls();
 	glob = sv;
-	tM = new TouchManager(150,20,.8);
+	tM = new TouchManager(150,20,.75);
 	tM.init();
 	glTM = tM;
 
@@ -30,21 +30,27 @@ function main(p) {
 	$(document).on('touchmove', function (e) {
          e.preventDefault();
 	 });
-	$("#description").on("drag", function() {
-		$("#body")[0].scrollTop = -event.detail.distances.y + "px";
+	var desc = $("#description");
+	desc.on("drag", function() {
+		console.log("received")
+		var elem = $("#body")
+		console.log(event.detail.speeds);
+		elem.scrollTop(elem.scrollTop() + event.detail.instantaneous.distance.y);
 	})
-	document.addEventListener("tap",function() {
+	$("#body").on("tap",function() {
+	})
+	$(document).on("swipe",function() {
 		var t = $("#description")[0].style.top;
-		if(t == "-30%") {
+		var e = event;
+		if(- e.detail.instantaneous.speed.vy > 0) {
 			t = "0%";
 			$("#description")[0].style.top = "0%";			
 		} else {
 			t = "-30%";
 			$("#description")[0].style.top = "-30%";
 		}
-		console.log($("#description")[0].style.top);
 		//$("#test")[0].innerHTML = "tapped" + Math.random();
-	},false)
+	})
 	//navigatorLoop();
 }
 
