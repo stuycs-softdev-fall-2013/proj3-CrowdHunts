@@ -1,9 +1,16 @@
 {% extends "base.html" %}
 {% block title %}Login{% endblock title %}
-  {% block content %}
+{% block content %}
+  <br>
+    {% if error %}
+      <div class="container">
+        <div class="alert alert-danger">{{error}}</div>
+      </div>
+    {% endif %}
     <h1 class="col-sm-offset-2">Login</h1>
 
-
+    <div class="container">
+    <div class="well">
     <form class="form-horizontal" role="form" method="POST">
       <div class="form-group">
         <label for="usern" class="col-sm-2 control-label">Username</label>
@@ -22,7 +29,6 @@
       <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
           <input type="submit" name="button" class="btn btn-default" value="Login">
-            <font color="#FF0000">{{error}}</font>
         </div>
       </div>
       <div class="form-group">
@@ -31,4 +37,6 @@
         </div>
       </div>
     </form>
-{% endblock content %}
+    </div>
+    </div>
+  {% endblock content %}

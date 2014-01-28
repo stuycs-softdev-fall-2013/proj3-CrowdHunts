@@ -1,25 +1,23 @@
 from flask import Flask, render_template, redirect, request, abort, jsonify, session, make_response
 import crossdomain
 from random import choice
-import test as db
+import db
 
 app = Flask(__name__)
 app.secret_key = 'shh this is secret'
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    if not 'usern' in session:
+        return render_template('index.html')
+    else:
+        return redirect('/home')
 
+# not very fun. we won't mention it, but we'll leave it there in case anyone's interested
 @app.route('/leaderboard')
 def leaders():
     leaders = db.users_by_score()
     return render_template('leaderboard.html', leaders=leaders)
-
-# user profile page
-@app.route('/u/<usern>')
-def profile(usern):
-    user = db.get_user(usern)
-    return render_template('user.html', user=usern)
 
 @app.route('/play')
 def play():
@@ -37,22 +35,56 @@ def test():
 
 ### AJAX ###
 
+# GET on finish quest
+# include questid as parameter
+# /jax/finishquest?questid=1
+@app.route('/jax/finishquest')
+def finishquest():
+    if 'questid' in request.args:
+        db.add_plays(session['usern'], 1)
+        ret = {'num_quests':db.get_user(session['usern'])[1]}
+        return jsonify(**ret)
+    ret = {'error':'questid missing'}
+    return ret
+
+# stop retrieval
+# index is the current index
+# /jax/getstop?questid=123&index=2
+#
+@app.route('/jax/getstop')
+def stop():
+    index = request.args.get('index')
+    qid = request.args.get('questid')
+    stop = db.get_stop(qid, index)
+    ret = {'title':stop[0][0],
+           'desc':stop[0][1],
+           'lat':stop[0][2],
+           'lon':stop[0][3],
+           'panoid':stop[0][4],
+           'questid':stop[0][5],
+           'index':stop[0][6],
+           'isfinal':stop[1]
+    } if stop[0] else {'error':'index out of bounds'}
+    return jsonify(**ret)
+
 # quest retrieval
-# /jax/getquest?lat=1&lon=1
+# /jax/getquest?panoid=abcd
+# returns [(usern, title, desc, questid)]
 @app.route('/jax/getquest')
 def quest():
-    #return db stuff
-    request.args.get('lat')
-    request.args.get('lon')
-    db.quest_in_prox(lat, lon)
+    panoid = request.args.get('panoid')
+    res = db.get_quests_at_pano(panoid)
+    ret = {'results':[{'usern':q[0], 'title':q[1], 'desc':q[2], 'num_stops':q[3], 'questid':q[4]} for q in res]}
+    return jsonify(**ret)
 
 # POST keys:
 # title
 # desc
-@app.route('/jax/new/start')
+@app.route('/jax/new/start', methods=['POST'])
 def new_start():
-    session['new-meta'] = {'title':title, 'desc':desc}
-    session['new-tour'] = []
+    session['new-meta'] = {'title':request.json.get('title'),
+                           'desc':request.json.get('desc')}
+    session['new-stops'] = []
 
 # POST keys:
 # title
@@ -60,29 +92,28 @@ def new_start():
 # lat
 # lon
 # desc
-@app.route('/jax/new/addstop')
+@app.route('/jax/new/addstop', methods=['POST'])
 def new_stop():
     #add to session
     data = request.get_json()
-    if 'new-tour' in session:
-        session['new-tour'].append((data['title'],
-                                    data['desc'],
-                                    data['lat'],
-                                    data['lon'],
-                                    data['panoid']))
+    if 'new-stops' in session:
+        session['new-stops'].append((data['title'],
+                                     data['desc'],
+                                     data['lat'],
+                                     data['lon'],
+                                     data['panoid']))
     
-
+# GET me
 @app.route('/jax/new/end')
 def new_end():
-    tour = session.pop('new-tour')
+    quest = session.pop('new-stops')
     meta = session.pop('new-meta')
-    data = {'stops':tour, 'info':(session['usern'], meta['title'], meta['desc'])}
-    db.add_tour(data)
+    db.add_quest(quest, meta, session['usern'])
 
-# cancel a tour in progress
+# cancel a quest in progress
 @app.route('/jax/new/cancel')
 def new_cancel():
-    session.pop('new-tour')
+    session.pop('new-stops')
     session.pop('new-meta')
 
 ### LOGIN FOLLOWS ###
@@ -90,7 +121,7 @@ def new_cancel():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if 'usern' in session:
-        return redirect('/')
+        return redirect('/home')
     if request.method == 'GET':
         return render_template('login.html',error="")
     else:
@@ -99,7 +130,7 @@ def login():
         passw = request.form['passw']
         if db.is_valid_user(usern, passw):
             session['usern'] = usern
-            return redirect('/')
+            return redirect('/home')
         else:
             return render_template('login.html', error='Username and password do not match')
 
