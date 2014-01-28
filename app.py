@@ -34,12 +34,13 @@ def test():
 ### AJAX ###
 
 # stop retrieval
-# /jax/getstop?panoid=abcd&tourid=123
+# index is the current index
+# /jax/getstop?panoid=abcd&tourid=123&index=2
 @app.route('/jax/getstop')
 def stop():
     panoid = request.args.get('panoid')
     tid = request.args.get('tourid')
-    
+    db.get_stop(panoid, tid)
 
 # quest retrieval
 # /jax/getquest?panoid=abcd
@@ -47,7 +48,7 @@ def stop():
 def quest():
     #return db stuff
     panoid = request.args.get('panoid')
-    db.quest_in_prox(panoid)
+    db.tour_in_prox(panoid)
 
 # POST keys:
 # title
