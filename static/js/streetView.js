@@ -170,6 +170,8 @@ function StreetView(canvas) {
 				if(self.pano != undefined) {
 					var pitch = self.pano.getPov().pitch;
 					var heading = process(self.pano.getPov().heading,event.webkitCompassHeading);
+				    if (heading == undefined)
+					heading = self.pano.getPov().heading;
 					self.setPov(heading,pitch,1);
 				}
 			}
