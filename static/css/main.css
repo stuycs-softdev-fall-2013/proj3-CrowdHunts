@@ -32,6 +32,10 @@ html {
 	top:0;
 	right:0;
 }
+span.vCentered {
+	display:inline-block;
+	vertical-align: middle;
+}
 input,textarea {
 	-webkit-appearance: none;
 	border-radius:0;
@@ -41,6 +45,9 @@ input,textarea {
 	width:100%;
 	margin:0;
 	border:0;
+}
+.scrollable {
+	overflow:scroll;
 }
 ::-webkit-input-placeholder { /* WebKit browsers */
     font-style:italic;

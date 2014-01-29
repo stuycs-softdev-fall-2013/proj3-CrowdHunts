@@ -67,11 +67,7 @@
 				</div>
 				<bh />
 				<div id="body">
-				Welcome to the financial district, home of the best building in the business. Only here will you find the likes of potbelly, duane reade, and chase all within the same block. We've even got two starbucks!
-
-				In other news, somehow i have become a drone after watching the cleveland show for 30 minutes. Perhaps its just my obsession with stupid shows MKAING you stupid, but perhaps im right. Perhaps theres something outside of my control, involved in trust and learning and related to subconscious language, a language that tricks you when you watch these idiotic shows.
-
-				The cleveland show is on another level though.
+				
 				</div>
 			</div>
 		</div>
@@ -82,11 +78,25 @@
 	<script type="text/javascript"
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDP6aoULMAMJg1uSocCFiNg9rhMiUHyui4&sensor=false">
     </script>
-    <script src="static/js/jquery-2.1.0.min.js"></script>
+    <script src="../static/js/jquery-2.1.0.min.js"></script>
     
-    <script src="static/js/main.js"></script>
-    <script src="static/js/phone.js"></script>
-    <script src="static/js/touch.js"></script>
-    <script src="static/js/streetView.js"></script>
+    <script src="../static/js/main.js"></script>
+    <script src="../static/js/phone.js"></script>
+    <script src="../static/js/interface.js"></script>
+	<script src="../static/js/touch.js"></script>
+    <script src="../static/js/streetView.js"></script>
+
+    <script>
+    function startTour(d) {
+    	console.log(d);
+    	$("#title")[0].innerHTML = d[0].title;
+    	$("#body")[0].innerHTML = d[0].title;
+    }
+    function start() {
+    	URL = "/jax/getquest"
+    	var panoid = env.streetView.pano.getPano();
+    	var req = $.get(URL,{panoid:panoid}).done(startTour(d))
+    }
+    </script>
 
 </html>

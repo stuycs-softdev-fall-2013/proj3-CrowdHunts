@@ -181,7 +181,7 @@ function TouchManager(tapLength,fingerWidth,swipeSpeed) {
 				}
 			}
 			var e = new SwipeEvent(distance,inst,duration,touch1,touch2);
-			console.log(e);
+			//console.log(e);
 			touch1.target.dispatchEvent(e);
 			return e;
 		},
@@ -250,11 +250,17 @@ function TouchManager(tapLength,fingerWidth,swipeSpeed) {
 			var self = this;
 			return function(e) {
 				console.log("touch detected");
-				event.preventDefault();
 				var time = new Date().getTime();
 				self.setRecentTouches(e.touches,time);
+				//preventDefault();
 				for(var i = 0; i < e.changedTouches.length;i++) {
 					//$("#test")[0].innerHTML += "Math.random()" + time;
+					/*if(isMobile.Android()) {
+						if(e.changedTouches[i].target.tagName != "INPUT" && e.changedTouches[i].target.tagName != "TEXTAREA") {
+							event.preventDefault();
+
+						}
+					}*/
 
 					var t = {
 						start:time,

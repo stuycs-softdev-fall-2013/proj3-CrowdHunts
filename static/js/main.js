@@ -1,11 +1,3 @@
-var glob;
-var running = false;
-var vx = 0;
-var vy = 0;
-var vz = 0;
-var y = 0;
-var x = 0;
-var glTM;
 var env;
 function main(p) {
 	var canvas = $("#main")
@@ -18,14 +10,14 @@ function main(p) {
 	sv.loadStreetView(p.coords.latitude,p.coords.longitude);
 	sv.setPov(0,0,0);
 	sv.enableOrientationControls();
-	glob = sv;
 	tM = new TouchManager(150,20,.75);
 	tM.init();
-	glTM = tM;
-	enableBasicUI();
+	var ui = new TouchUI();
+	ui.init();
 	var ans = {
 		streetView:sv,
 		touchManager:tM,
+		UI: ui,
 		running:true,
 
 		navigatorLoop: function() {
@@ -40,6 +32,7 @@ function main(p) {
 						}
 					}
 					console.log(self);
+					console.log("new loop:");
 					self.navigatorLoop();
 				}
 			}
@@ -49,58 +42,7 @@ function main(p) {
 	}
 	return ans;
 }
-function enableBasicUI() {
-    $('.scrollable').on("drag",function() {
-    	var e = event
-    	var top = jQuery(this).scrollTop();
-    	jQuery(this).scrollTop(top + e.detail.instantaneous.distance.y);
-    })
-    $('input,textarea').on("tap",function() {
-    	this.focus();
-    	this.select();
-    })
-    $('.swipe-left').on("swipe",function() {
-    	var e = event;
-    	var max = true;
-    	if(!this.style.left) {
-    		this.style.left = "0";
-    	}
-    	if(this.getAttribute('max')) {
-    		max = (-1 * parseInt(this.style.left) / 100 < parseInt(this.getAttribute('max')));
-    	}
-    	console.log(this.getAttribute('max'));
-    	console.log(max);
-    	if(max && (this.swipeLeft == undefined|| this.swipeLeft != true)) {
-	    	if(Math.abs(e.detail.instantaneous.angle - 175) < 10) {
-	    		if(this.swipeLeft == undefined || this.swipeLeft != true) {
-	    			this.swipeLeft = true
-	    		} 
-	    		var left = parseInt(this.style.left);
-	    		left -= 100;
 
-	    		this.style.left = left + "%";
-	    	}
-	    }
-	    console.log(this.swipeLeft);
-    	console.log(e.detail.instantaneous.angle)
-    	/*if(e.detail.instantaneous.direction.x < 0) {
-    		this.style.left = "-100%";
-    	}*/
-    })
-    $('.frame').map(function(i,elem) {
-    	console.log(i);
-    	if(elem.hasAttribute("number")) {
-    		elem.style.left = parseInt(elem.getAttribute("number")) * 100 + "%";
-    		console.log(elem.getAttribute("number"));
-    	}
-    });
-
-    $('.swipe-left').on("touchend",function() {
-    	if(this.swipeLeft && this.swipeLeft != undefined) {
-    		this.swipeLeft = false;
-    	}
-    })
-}
 
 function navigatorLoop() {
 	navigator.geolocation.getCurrentPosition(function (p) {
@@ -114,7 +56,10 @@ function navigatorLoop() {
 $(document).ready(function() {
 	navigator.geolocation.getCurrentPosition(function (p) {
 		env = main(p);
-		//env.navigatorLoop();
+		env.navigatorLoop();
+		$(document).on("locationchange",function() {
+			console.log(event);
+		})
 	})
 
 });

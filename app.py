@@ -47,6 +47,11 @@ def test():
 
 ### AJAX ###
 
+@app.route("/tour")
+def tour():
+    return render_template("tourPlay.html")
+
+
 # GET on finish quest
 # include questid as parameter
 # /jax/finishquest?questid=1
@@ -57,10 +62,10 @@ def finishquest():
         ret = {'num_quests':db.get_user(session['usern'])[1]}
         return jsonify(**ret)
     ret = {'error':'questid missing'}
-    return ret
+    return jsonify(**ret)
 
 # stop retrieval
-# index is the current index
+# index is next index
 # /jax/getstop?questid=123&index=2
 #
 @app.route('/jax/getstop')
@@ -94,9 +99,12 @@ def quest():
 # desc
 @app.route('/jax/new/start', methods=['POST'])
 def new_start():
-    session['new-meta'] = {'title':request.json.get('title'),
-                           'desc':request.json.get('desc')}
+    data = request.form
+    session['new-meta'] = {'title':data['title'],
+                           'desc':data['desc']}
     session['new-stops'] = []
+    ret = {'received':True}
+    return jsonify(**ret)
 
 # POST keys:
 # title
@@ -107,26 +115,40 @@ def new_start():
 @app.route('/jax/new/addstop', methods=['POST'])
 def new_stop():
     #add to session
-    data = request.get_json()
+
+    data = request.form
+    print data
     if 'new-stops' in session:
-        session['new-stops'].append((data['title'],
-                                     data['desc'],
-                                     data['lat'],
-                                     data['lon'],
-                                     data['panoid']))
+        stop = (data['title'],
+             data['desc'],
+             float(data['lat']),
+             float(data['lon']),
+             data['panoid'])
+        print 'stop received:', stop
+        session['new-stops'].append(stop)
+        print 'session:', session  
+    ret = {'received':True}
+    return jsonify(**ret)
     
 # GET me
 @app.route('/jax/new/end')
 def new_end():
     quest = session.pop('new-stops')
     meta = session.pop('new-meta')
+    print 'quest =', quest
+    print 'meta =', meta
+    print 'usern =', session['usern']
     db.add_quest(quest, meta, session['usern'])
+    ret = {'received':True}
+    return jsonify(**ret)
 
 # cancel a quest in progress
 @app.route('/jax/new/cancel')
 def new_cancel():
     session.pop('new-stops')
     session.pop('new-meta')
+    ret = {'received':True}
+    return jsonify(**ret)
 
 ### LOGIN FOLLOWS ###
 
@@ -149,7 +171,7 @@ def login():
 @app.route('/logout')
 def logout():
     if 'usern' in session:
-        session.pop('usern')
+        session.clear()
         return redirect('/')
 
 @app.route('/register', methods=['GET', 'POST'])

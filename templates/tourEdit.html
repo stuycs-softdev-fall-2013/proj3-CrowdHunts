@@ -9,6 +9,9 @@
 	body {
 		margin:0;
 	}
+	.container {
+		z-index: -1;
+	}
 	.text {
 		padding:5%;
 		font: "Times New Roman", Times, serif;
@@ -17,21 +20,19 @@
 		font-style:italic;
 		text-shadow:2pt 2pt 0px #000000;
 	}
-	#title {
+	.title {
 		font-size:20pt;
+		font-style:italic;
 		height:20%;
 	}
-	#body {
+	.body {
 		font-style:normal;
-		overflow:scroll;
 		height:50%;
 	}
 	#description {
 		position:absolute;
 		height:100%;
 		width:100%;
-		opacity:.9;
-		background-color:#E3E3E3;
 		top:0;
 		left:0;
 
@@ -64,9 +65,45 @@
 	#stopDescription {
 		height:100%;
 	}
+	.next {
+		width:100%;
+		top:100%;
+		text-align: center;
+		color:#ffffff;
+		text-shadow:0 0 20pt #000000;
+		transition:.8s top;
+		height:100%;
+		font-size:40pt;
+	}
+	.instructions {
+	}
+	.bottomless {
+		margin-bottom:0;
+	}
+	.finish {
+		background-color: rgba(75,255,68,.8);
+		font-style:italic;
+		padding-top:5pt;
+		padding-bottom:5pt;
+		transition:2s background-color;
+		position:absolute;
+		width:100%;
+		bottom:0px;
+	}
+	.finally {
+		display:none;
+		text-shadow:0 0 20pt rgba(150,38,21,1);
+		color:#008CFF;
+		text-align: center;
+		position:relative;
+	}
 	.designer {
+		opacity:.9;
+
 		height:30%;
+		background-color:#FA5941;
 		left:0;
+		transition:.8s top;
 	}
 	.swipe-left {
 		width:100%;
@@ -76,26 +113,124 @@
 		left:0;
 		transition:.5s left;
 	}
+	.submit {
+		width:100%;
+		height:100%;
+		background-color:#ffffff;
+	}
+	.preview {
+		position:relative;
+		top:0;
+		left:0;
+		height:70%;
+		background-color: #FA5941;
+	}
+	.choice {
+		height:30%;
+		width:50%;
+		float:left;
+		background-color:#008CFF;
+		text-align:center;
+		font-size:30pt;
+		text-shadow: 0 0 35pt #000000;
+		color:#ffffff;
+		position:relative;
+	}
+	.choice#confirm {
+		background-color:#008CFF;
+		transition: .3s top, .3s width, .3s height;
+	}
+	.loading {
+		display:none;
+		opacity:0;
+		transition: 2s opacity;
+	}
+	.field {
+    	width:100%;
+    	padding:0pt;
+    	margin-bottom:25pt;
+    }
+    .label {
+    	color:white;
+    	font-style:italic;
+    	font-size:40pt;
+    	margin-bottom:10pt;
+    }
+    .desc {
+    	color:white;
+    	font-style:normal;
+		height:70%;
+		
+    	font-style: normal;
+    	font-size:15pt;
+    	margin-top:10pt;
+    	color:white;
+    }
+    .padded {
+    	position:absolute;
+    	display:block;
+    	height:auto;
+    	top:0;
+    	left:0;
+    	right:0;
+    	bottom:0;
+    	margin:20pt;
+    }
+    .wrapper {
+    	height:100%;
+    	width:100%;
+    }
+
 	</style>
 	</head>
 	<body>
-		<div class="swipe-left" max=1>
+		<div class="swipe-left swipe-right" id="view" max=1 min=0>
 			<div class="designer frame" number=0>
 				<div id="description">
 					<div class="text">
-						<div id="title"> 
+						<div class="title"> 
 							<input class="edit" id="stopTitle" placeholder="Title"/>
 						</div>
 						<hr />
-						<div id="body">
+						<div class="body">
 							<textarea id="stopDescription" class="edit scrollable" placeholder="Description"></textarea>
+
 						</div>
+					</div>
+				</div>
+			</div>
+			<div class="next frame" number = 0>
+				<div class="instructions">
+					carry on.
+				</div>
+				<hr class="bottomless"/>
+				<div class="finish">
+					Finish quest
+					<hr />
+					<div class="finally">
+						Go Home.
 					</div>
 				</div>
 			</div>
 			<div class="submit frame" number=1>
 				<div class="preview">
-				<div class=
+
+					<div class="padded">
+						<div class="label">
+							<div class="title">
+								
+							</div>
+						</div>
+						<hr />
+						<div class="desc scrollable">
+							test
+						</div>
+					</div>
+
+				</div>
+				<div class="submit">
+					<div class="choice" id="confirm"> <span class="vCentered"> Save </span> <div class="loading">loading...</div> </div>
+					<div class="choice" id="deny"> <span class="vCentered">Cancel</span> </div>
 				</div>
 			</div>
 
@@ -112,9 +247,120 @@
     
     <script src="../static/js/main.js"></script>
     <script src="../static/js/phone.js"></script>
-    <script src="../static/js/touch.js"></script>
+    <script src="../static/js/interface.js"></script>
+	<script src="../static/js/touch.js"></script>
     <script src="../static/js/streetView.js"></script>
     <script>
+    $(".submit").on("viewframe",function() {
+    	var title = $("#stopTitle")[0].value;
+    	var desc = $("#stopDescription")[0].value;
+    	console.log(this);
+    	$(this).find(".title").map(function(i,elem){
+    		console.log(elem);
+    		elem.innerHTML = title;
+    	})
+    	$(this).find(".desc").map(function(i,elem){
+    		elem.innerHTML = desc;
+    		//elem.style.height = "30%";
+    	})
+    });
+    $('#confirm').on("tap",function() {
+    	this.style.height = "100%";
+    	this.style.top = "-70%";
+    	this.style.width = "100%";
+    	$(this).children('.loading')[0].style.display = "block"
+    	$(this).children('.loading')[0].style.opacity = 1
+    	submit();
+    })
+    var reset = function() {
+    	$(".designer.frame")[0].style.top = "0%";
+    	$(".designer.frame").find("input,textarea").map(function(i,ele) {
+    		ele.value = "";
+    		ele.innerHTML = "";
+    	});
+    	$(".next.frame")[0].style.top= "100%";
+    	$("#view").map(function(i,ele) {
+    		ele.style.left = 0;
+    	})
+
+    }
+    var newSubmission = function() {
+    	var handler = function() {
+    		reset();
+    		$(document).off("locationchange",handler);
+    	}
+    	//$(document).on("locationchange",handler);
+
+    }
+    var endSubmission = function() {
+    	$("#view")[0].style.left = "0";
+    	var t = $("#confirm")[0];
+    	t.style.height = "30%";
+    	t.style.top = "0%";
+    	t.style.width = "50%";
+    	$(t).children('.loading')[0].style.display = "none"
+    	$(t).children('.loading')[0].style.opacity = 0
+
+    	$(".designer.frame")[0].style.transition = "0s top";
+    	$(".designer.frame")[0].style.top = "-30%";
+    	$(".designer.frame")[0].style.transition = ".8s top";
+
+    	$(".next.frame")[0].style.top= "0%";
+    	newSubmission();
+    }
+    var UIEndTour = function() {
+    	$("#view")[0].setAttribute("max","0")
+    	$("#view")[0].setAttribute("min","0")
+    	$(".frame.next")[0].style.top = "-20%";
+    	$(".frame.next")[0].style.height = "200%";
+    	var fin = $(".finish")[0];
+    	fin.style.width= "100%";
+    	fin.style.height = "100%";
+    	fin.style.backgroundColor = "rgba(250,89,65,1)";
+    	$(".finally")[0].style.display = "block";
+    }
+    var submit = function() {
+    	var url = "/jax/new/addstop"
+    	var title = $("#stopTitle")[0].value
+    	var desc = $("#stopDescription")[0].value
+    	var pano = env.streetView.pano
+    	var id = pano.getPano();
+    	var LatLng = pano.getPosition();
+    	var lat = LatLng.lat();
+    	var lon = LatLng.lng();
+    	var POST = {
+    		contentType:'application/json',
+    		title:title,
+    		panoid:id,
+    		lat:lat,
+    		lon:lon,
+    		desc:desc
+    	};
+    	console.log(POST);
+    	$.post(url,POST).done(endSubmission).fail(endSubmission)
+    }
+    var endTour = function() {
+    	url = "/jax/new/end"
+    	$.get(url,"we did it bitch");
+    	UIEndTour();
+    }
+    $(".finish").on("tap",endTour);
+    $(".instructions").on("tap",reset);
+    $(".finally").on("tap",function() {
+    	var fin = $(".finish")[0];
+    	fin.style.transition = "1s background-color, 1s top"
+    	var fina = $(".finally")[0];
+    	$(".finally")[0].style.transition = "1s top";
+    	$('.frame.next')[0].style.top = "-100%";
+    	$(".frame.next")[0].style.height = "200%";
+    	fin.style.backgroundColor = "#ffffff";
+    	$(".finally")[0].style.top = "200%";
+    	setTimeout(function() {
+    		window.location.href = "/home";
+    	},1000)
+    	
+    })
+    $("#deny").on("tap",reset);
     console.log(env);
     </script>
 

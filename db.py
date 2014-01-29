@@ -32,7 +32,7 @@ def init_db():
 def add_user(usernm, passwd):
     conn=sql.connect(DB_NAME)
     c=conn.cursor()
-    temp=(usernm,generate_password_hash(passwd))
+    temp=(usernm.lower(),generate_password_hash(passwd))
     c.execute("INSERT INTO users VALUES (?,?,0)",temp)
     conn.commit()
     conn.close()
@@ -44,7 +44,7 @@ def add_user(usernm, passwd):
 def updt_pass(usernm, old_pass, new_pass):
     conn=sql.connect(DB_NAME)
     c=conn.cursor()
-    temp=(usernm,)
+    temp=(usernm.lower(),)
     c.execute("SELECT * FROM users WHERE username=?",temp)
     temp_user=c.fetchone()
     if temp_user==None:
@@ -65,7 +65,7 @@ def updt_pass(usernm, old_pass, new_pass):
 def is_valid_user(usernm,passwd):
     conn=sql.connect(DB_NAME)
     c=conn.cursor()
-    temp=(usernm,)
+    temp=(usernm.lower(),)
     c.execute("SELECT * FROM users WHERE username=?",temp)
     temp_user=c.fetchone()
     conn.close()
@@ -134,7 +134,7 @@ def get_users_quests(usern):
 #        : index - index of stop
 # returns ((title, desc, lat, lon, panoid, questid, index), isfinal)
 def get_stop(qid, index):
-    conn = sql.connect(DB_NAME)
+    conn = sql.connect(DB_NAME) 
     c = conn.cursor()
     c.execute("SELECT * FROM stops WHERE questid=? AND indx=?", (qid, index))
     ret = c.fetchone()
@@ -151,7 +151,7 @@ def add_quest(stops, meta, usern):
     i = 0
     qid = c.lastrowid
     for s in stops:
-        vals = (s['title'], s['desc'], s['lat'], s['lon'], s['panoid'], qid, i)
+        vals = (s[0], s[1], s[2], s[3], s[4], qid, i)
         c.execute("INSERT INTO stops VALUES (?, ?, ?, ?, ?, ?, ?)", vals)
         i+=1
     conn.commit()

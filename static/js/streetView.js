@@ -25,6 +25,18 @@ function StreetView(canvas) {
 
 	var gc = new google.maps.Geocoder();
 	var service = new google.maps.StreetViewService();
+
+	var ChangeLocationEvent = function(oldPid,cPid) {
+		return new CustomEvent("locationchange",{
+			detail: {
+				pano: {
+					old:oldPid,
+					current:cPid
+				}
+			}
+		})
+	}
+
 	var ans =  {
 		geocoder: gc,
 		canvas: canvas,
@@ -54,7 +66,13 @@ function StreetView(canvas) {
 			})
 		},
 		select: function(link) {
-			this.pano.setPano(link.pano);
+			var oldId = this.pano.getPano()
+			var cId = link.pano;
+			if(oldId != cId) {
+				var e = new ChangeLocationEvent(oldId,cId);
+				document.dispatchEvent(e);
+			}
+			this.pano.setPano(cId);
 		},
 		transitionTarget: function(lat,lng) { //requires pano data for current pano
 			var links = this.pano.getLinks();
