@@ -1,30 +1,10 @@
 {% extends "base.html" %}
 {% block title %}CrowdQuests{% endblock title %}
 {% block content %}
-  <div class="container">
-    <div class="header">
-      <h3 class="text-muted">CrowdQuests</h3>
-    </div>
-
-    <div class="home">
-      <h1>Quest</h1>
-      <p class="lead">Crowdsourced quests! Play one made by others,
-	or make your own!</p>
-	<div class="btn-group btn-group-justified">
-	  <a class="btn btn-lg btn-warning" href="/login"
-	     role="button">Login</a>
-	  <a class="btn btn-lg btn-success" href="/register"
-	     role="button">Sign up today</a>
-
-	</div>
-    </div>
-    <br/>
-    <div class="rows">
-      <div class="col-lg-6">
-        <h4>Creators</h4>
-        <p>Developed by Will Field-Thompson, Yaseen Islam, Tak Chi Wan, Hunter Herman</p>
-        <p>&copy; Stuyvesant High School Software Development 2013-14</p>
-      </div>
-    </div>
-  </div>
+  <a href="/"><h1>CrowdQuests</h1></a>
+  <hr/>
+  <p>Crowdsourced quests: play one made by others, or make your own. <a href="/login">Login</a> or <a href="/register">Register</a> today to start questing!</p>
+  <h4>Developed By:</h4>
+  <p>&copy Hunter Herman, Yaseen Islam, Will Field-Thompson, and Tak Chi Wan 2014</p>
+  <p>Developed for Software Development ('13-'14) at Stuyvesant High School.</p>
 {% endblock content %}
