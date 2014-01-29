@@ -102,7 +102,7 @@ function TouchUI() {
 	    },
 		init: function() {
 			var self = this;
-			$('.scrollable').on("drag",function() {
+			$('.scrollable, textarea').on("drag",function() {
 		    	var e = event
 		    	var top = jQuery(this).scrollTop();
 		    	jQuery(this).scrollTop(top + e.detail.instantaneous.distance.y);
