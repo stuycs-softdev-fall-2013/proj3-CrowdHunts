@@ -149,7 +149,6 @@ function TouchManager(tapLength,fingerWidth,swipeSpeed) {
 				}
 			}
 			var e = new DragEvent(distance,inst,duration,touch1,touch2);
-			console.log(e);
 			touch1.target.dispatchEvent(e);
 			return e;
 		},
@@ -181,7 +180,6 @@ function TouchManager(tapLength,fingerWidth,swipeSpeed) {
 				}
 			}
 			var e = new SwipeEvent(distance,inst,duration,touch1,touch2);
-			//console.log(e);
 			touch1.target.dispatchEvent(e);
 			return e;
 		},
