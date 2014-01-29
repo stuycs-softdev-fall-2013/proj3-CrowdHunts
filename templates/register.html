@@ -3,40 +3,17 @@
 {% block content %}
   <br>
     {% if error %}
-      <div class="container">
-        <div class="alert alert-danger">{{error}}</div>
-      </div>
+      <div class="panel alert">{{error}}</div>
     {% endif %}
-    <h1 class="col-sm-offset-2">Register</h1>
-<div class="container">
-<div class="well">
-    <form class="form-horizontal" role="form" method="POST">
-      <div class="form-group">
-        <label for="user" class="col-sm-2 control-label">Username</label>
-        <div class="col-sm-3">
-          <input type="text" class="form-control" name="usern" placeholder="Username">
-        </div>
-      </div>
+    <h1>Register</h1>
 
-      <div class="form-group">
-        <label for="pass" class="col-sm-2 control-label">Password</label>
-        <div class="col-sm-3">
-          <input type="password" class="form-control" name="passw" placeholder="Password">
-        </div>
-      </div>
+    <form  role="form" method="POST">
+      <input type="text" name="usern" class="form-control" placeholder="Username"/>
+      <input type="password" name="passw" class="form-control" placeholder="Password"/>
 
-      <div class="form-group">
-        <div class="col-sm-offset-2 col-sm-10">
-          <input type="submit" name="button" class="btn btn-default" value="Register">
-            <font color="#FF0000">{{error}}</font>
-        </div>
-      </div>
-      <div class="form-group">
-        <div class="col-sm-offset-2 col-sm-10">
-          Already have an account?<button type="button" class="btn btn-link"><a href="/login">Login here</a></button>
-        </div>
+      <input type="submit" name="button" class="button" value="Register"/>
+      <div class="panel">
+        Already have an account? <a href="/login">Login here.</a>
       </div>
     </form>
-</div>
-</div>
   {% endblock content %}
