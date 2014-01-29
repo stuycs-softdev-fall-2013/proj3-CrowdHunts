@@ -80,7 +80,7 @@ function TouchUI() {
 	    		var pos = this.getFrame(view);
 		    	var lim = true;
 		    	if(view.hasAttribute(dir.dir + "Bound")) {
-		    		lim = dir.mod.x ? dir.mod.x * pos.x < dir.mod.x * parseInt(view.getAttribute(dir.dir + "Bound")) : dir.mod.y * pos.y > dir.mod.y * parseInt(view.getAttribute(dir.dir + "Bound"));
+		    		lim = dir.mod.x ? dir.mod.x * pos.x < dir.mod.x * parseInt(view.getAttribute(dir.dir + "Bound")) : dir.mod.y * pos.y < dir.mod.y * parseInt(view.getAttribute(dir.dir + "Bound"));
 		    	}
 		    	if(lim) {
 		    		view.setAttribute(dir.dir + "Swipe",true);

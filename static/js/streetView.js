@@ -21,7 +21,7 @@ function closestVal(heading,headingList) {
 	return {index:index,val:ans};
 }
 
-function StreetView(canvas) {
+function StreetView(canvas,radius) {
 
 	var gc = new google.maps.Geocoder();
 	var service = new google.maps.StreetViewService();
@@ -33,7 +33,8 @@ function StreetView(canvas) {
 					old:oldPid,
 					current:cPid
 				}
-			}
+			},
+			bubbles:true
 		})
 	}
 
@@ -43,8 +44,18 @@ function StreetView(canvas) {
 		
 		pano:null,
 		data:null,
+		radius:radius,
 		service: service,
-
+		locationEvent: function(oldId,newId) {
+			var e = new ChangeLocationEvent(oldId,newId);
+			document.dispatchEvent(e);
+			console.log(e);
+		},
+		initStreetView: function(lat,lng) {
+			this.pano = this.getStreetViewContainer(lat,lng);
+			console.log("pano initialized");
+			this.locationEvent(null,this.pano.getPano());
+		},
 		thisTest: function() {
 			console.log(this.getLatLng("Eiffel Tower"));
 		},
@@ -69,8 +80,7 @@ function StreetView(canvas) {
 			var oldId = this.pano.getPano()
 			var cId = link.pano;
 			if(oldId != cId) {
-				var e = new ChangeLocationEvent(oldId,cId);
-				document.dispatchEvent(e);
+				this.locationEvent(oldId,cId);
 			}
 			this.pano.setPano(cId);
 		},
@@ -117,7 +127,9 @@ function StreetView(canvas) {
 			})
 		},
 		loadStreetView: function(lat,lng) {
-			this.pano = this.getStreetViewContainer(lat,lng);
+			this.getData(lat,lng,this.radius,function(p) {
+				this.select(p.location.pano);
+			})
 		},
 		getStreetViewContainer: function(lat,lng) {
 			var loc = new google.maps.LatLng(lat,lng);

@@ -7,7 +7,7 @@ function main(p) {
 		height: $(window).height(),
 		width: $(window).width()
 	}
-	sv.loadStreetView(p.coords.latitude,p.coords.longitude);
+	sv.initStreetView(p.coords.latitude,p.coords.longitude);
 	sv.setPov(0,0,0);
 	sv.enableOrientationControls();
 	tM = new TouchManager(150,20,.75);
@@ -56,10 +56,15 @@ function navigatorLoop() {
 $(document).ready(function() {
 	navigator.geolocation.getCurrentPosition(function (p) {
 		env = main(p);
+
 		env.navigatorLoop();
 		$(document).on("locationchange",function() {
 			console.log(event);
+
 		})
+		var e = new CustomEvent("envready");
+		document.dispatchEvent(e);
+
 	})
 
 });
