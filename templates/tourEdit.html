@@ -72,7 +72,10 @@
 		color:#ffffff;
 		text-shadow:0 0 20pt #000000;
 		transition:.8s top;
+		height:100%;
 		font-size:40pt;
+	}
+	.instructions {
 	}
 	.bottomless {
 		margin-bottom:0;
@@ -83,7 +86,9 @@
 		padding-top:5pt;
 		padding-bottom:5pt;
 		transition:2s background-color;
-		position:relative;
+		position:absolute;
+		width:100%;
+		bottom:0px;
 	}
 	.finally {
 		display:none;
@@ -300,7 +305,7 @@
     	$(".designer.frame")[0].style.top = "-30%";
     	$(".designer.frame")[0].style.transition = ".8s top";
 
-    	$(".next.frame")[0].style.top= "64.5%";
+    	$(".next.frame")[0].style.top= "0%";
     	newSubmission();
     }
     var UIEndTour = function() {
