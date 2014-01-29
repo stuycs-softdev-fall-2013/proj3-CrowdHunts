@@ -15,7 +15,7 @@
 	.text {
 		padding:5%;
 		font: "Times New Roman", Times, serif;
-		color:white;
+		color:#FFFBF6;
 		font-size:10pt;
 		font-style:italic;
 		text-shadow:2pt 2pt 0px #000000;
@@ -35,9 +35,7 @@
 		width:100%;
 		top:0;
 		left:0;
-
-		border-bottom:1px solid #aaaaaa;
-		transition:.3s top;
+				transition:.3s top;
 		
 	}
 	#container {
@@ -60,6 +58,7 @@
 		float:left;
 	}
 	.edit {
+		color:#810036;
 		font-size:15pt;
 	}
 	#stopDescription {
@@ -69,26 +68,26 @@
 		width:100%;
 		top:100%;
 		text-align: center;
-		color:#ffffff;
-		text-shadow:0 0 20pt #000000;
+		color:#FFFBF6;
 		transition:.8s top;
 		height:100%;
 		font-size:40pt;
 	}
 	.instructions {
+		text-shadow:0 0 20pt #000000;
+
 	}
 	.bottomless {
 		margin-bottom:0;
 	}
 	.finish {
-		background-color: rgba(75,255,68,.8);
+		background-color: #008CFF;
 		font-style:italic;
 		padding-top:5pt;
 		padding-bottom:5pt;
 		transition:2s background-color;
 		position:absolute;
 		width:100%;
-		bottom:0px;
 	}
 	.finally {
 		display:none;
@@ -101,14 +100,14 @@
 		opacity:.9;
 
 		height:30%;
-		background-color:#FA5941;
+		background-color:#810036;
 		left:0;
 		transition:.8s top;
 	}
-	.swipe-left {
+	.swipeable {
 		width:100%;
 		height:100%;
-		position:fixed;
+		position:absolute;
 		top:0;
 		left:0;
 		transition:.5s left;
@@ -116,29 +115,29 @@
 	.submit {
 		width:100%;
 		height:100%;
-		background-color:#ffffff;
 	}
 	.preview {
 		position:relative;
 		top:0;
 		left:0;
-		height:70%;
-		background-color: #FA5941;
+		height:80%;
+		background-color: #810036;
 	}
 	.choice {
-		height:30%;
-		width:50%;
+		height:20%;
+		width:100%;
 		float:left;
-		background-color:#008CFF;
 		text-align:center;
 		font-size:30pt;
 		text-shadow: 0 0 35pt #000000;
-		color:#ffffff;
+		color:#810036;
 		position:relative;
 	}
 	.choice#confirm {
 		background-color:#008CFF;
 		transition: .3s top, .3s width, .3s height;
+		color:#FFFBF6;
+
 	}
 	.loading {
 		display:none;
@@ -151,20 +150,20 @@
     	margin-bottom:25pt;
     }
     .label {
-    	color:white;
+    	color:#FFFBF6;
     	font-style:italic;
     	font-size:40pt;
     	margin-bottom:10pt;
     }
     .desc {
-    	color:white;
+    	color:#FFFBF6;
     	font-style:normal;
 		height:70%;
 		
     	font-style: normal;
     	font-size:15pt;
     	margin-top:10pt;
-    	color:white;
+    	color:#FFFBF6;
     }
     .padded {
     	position:absolute;
@@ -180,39 +179,43 @@
     	height:100%;
     	width:100%;
     }
-
+    .up {
+    	transition:.3s top;
+    }
 	</style>
 	</head>
 	<body>
-		<div class="swipe-left swipe-right" id="view" max=1 min=0>
-			<div class="designer frame" number=0>
-				<div id="description">
-					<div class="text">
-						<div class="title"> 
-							<input class="edit" id="stopTitle" placeholder="Title"/>
-						</div>
-						<hr />
-						<div class="body">
-							<textarea id="stopDescription" class="edit scrollable" placeholder="Description"></textarea>
+		<div class="swipeable left right" id="view" leftBound=1 rightBound=0>
+			<div class="swipeable frame up down" x=0 upBound=0 downBound = 0>
+				<div class="designer frame" x=0>
+					<div id="description">
+						<div class="text">
+							<div class="title"> 
+								<input class="edit" id="stopTitle" placeholder="Title"/>
+							</div>
+							<hr />
+							<div class="body">
+								<textarea id="stopDescription" class="edit scrollable" placeholder="Description"></textarea>
 
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="next frame" x = 0 y=1>
+					<div class="instructions">
+						carry on.
+					</div>
+					<hr class="bottomless"/>
+					<div class="finish">
+						Finish quest
+						<hr />
+						<div class="finally">
+							Go Home.
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="next frame" number = 0>
-				<div class="instructions">
-					carry on.
-				</div>
-				<hr class="bottomless"/>
-				<div class="finish">
-					Finish quest
-					<hr />
-					<div class="finally">
-						Go Home.
-					</div>
-				</div>
-			</div>
-			<div class="submit frame" number=1>
+			<div class="submit frame" x=1>
 				<div class="preview">
 
 					<div class="padded">
@@ -230,7 +233,6 @@
 				</div>
 				<div class="submit">
 					<div class="choice" id="confirm"> <span class="vCentered"> Save </span> <div class="loading">loading...</div> </div>
-					<div class="choice" id="deny"> <span class="vCentered">Cancel</span> </div>
 				</div>
 			</div>
 
@@ -280,7 +282,7 @@
     	});
     	$(".next.frame")[0].style.top= "100%";
     	$("#view").map(function(i,ele) {
-    		ele.style.left = 0;
+    		env.UI.setFrame(view,{x:0,y:0});
     	})
 
     }

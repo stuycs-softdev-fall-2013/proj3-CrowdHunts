@@ -76,7 +76,6 @@ function TouchUI() {
 			}
 		},
 		swipeView: function(view,dir) {
-			console.log("swiping");
 	    	if(view.getAttribute(dir.dir + "Swipe") != "true") {
 	    		var pos = this.getFrame(view);
 		    	var lim = true;
@@ -117,10 +116,10 @@ function TouchUI() {
 		    })
 		    
 		    $('.swipeable.left').on("swipe",function() {
-		    	console.log("view left swiped");
 		    	var angle = event.detail.instantaneous.angle;
 		    	dir = self.getDir(angle,self.angleError);
 		    	if(dir && dir.dir == "left") {
+			    	console.log("view left swiped");
 		    		self.swipeView(this,dir);
 		    	}
 		    })
@@ -135,6 +134,7 @@ function TouchUI() {
 		    	var angle = event.detail.instantaneous.angle;
 		    	dir = self.getDir(angle,self.angleError);
 		    	if(dir && dir.dir == "up") {
+		    		console.log(angle);
 		    		console.log("up swipe");
 		    		self.swipeView(this,dir);
 		    	}
@@ -143,6 +143,7 @@ function TouchUI() {
 		    	var angle = event.detail.instantaneous.angle;
 		    	dir = self.getDir(angle,self.angleError);
 		    	if(dir && dir.dir == "down") {
+		    		console.log(angle)
 		    		self.swipeView(this,dir);
 		    	}
 		    })

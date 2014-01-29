@@ -11,13 +11,13 @@
     	height:100%;
     	top:0px;
     	left:0px;
-    	background-color:#FFFBF6;
+    	background-color:#810036;
     	opacity:.95;
     	transition:.5s left,.8s opacity;
     }
     hr {
     	border-top-width: 0;
-        border-color:#CFA74F;
+        border-color:#ffffff;
     }
     .scrollable {
     }
@@ -37,7 +37,7 @@
     }
     .label {
     	margin:0;
-    	color:#CFA74F;
+    	color:#FFFBF6;/*CFA74F;*/
     	font-style:italic;
     	font-size:25pt;
     	margin-bottom:10pt;
@@ -46,13 +46,14 @@
 		font-size:17pt;
 		padding:10pt;
         background-color:#FFFBF6;
-        border:2pt solid #810036;
+        box-shadow:0px 0px 20pt -10pt#370014;
         color:#810036;
+        box-shadow: 0px 0px 30px #
     }
     .save {
     	position:absolute;
-    	top:40%;
     	width:100%;
+        top:50%;
     	text-align: center;
     	color:white;
     	font-size:30pt;
@@ -60,10 +61,10 @@
 
     }
     .bar {
-        color:#CFA74F;
+        color:#FFFBF6;
     }
     .prompt {
-        color:#CFA74F;
+        color:#FFFBF6;
         text-shadow:2px 2px 20pt rgba(0,0,0,1);
 
     }
@@ -99,6 +100,9 @@
 
     	top:40%;
     }
+    .photodivider {
+        box-shadow: 0px -20pt 20pt #000000,0px 30pt 30pt #ffffff;
+    }
     textarea.creator {
     	min-height:80pt;
     }
@@ -106,7 +110,7 @@
     </style>
 </head>
 	<body>
-		<div class="swipeable left right up down" leftBound=2 rightBound = 1>
+		<div class="swipeable left" leftBound=1>
 
 			<div class="builder scrollable frame" x=0 y=0>
 				<div class = "field">
@@ -125,18 +129,18 @@
 				</div>
 				
 			</div>
-			<div class="save frame" x=1 y =0>
+			<div class="save frame" x=1>
 				<div class="prompt">
 					begin your quest?
 				</div>
-				<hr>
+				<hr class="photoDivider">
 				<div class="response">
 					<span class="choice" id="confirm"> yes</span> 
                     <span class="bar">|</span>
 					<span class="choice" id="deny"> no</span>
 				</div>
 			</div>
-			<div class="confirmation frame" x= 2>
+			<div class="confirmation frame" x=2>
 				<div class="gratz">
 				good choice.
 				</div>
@@ -185,7 +189,7 @@
 		var title = $("#questTitle")[0].value;
 		var desc = $("#questDescription")[0].value;
 		var url = "/jax/new/start";
-    	var par = $(".swipe-left")[0]
+    	var par = $(".swipeable")[0]
     	par.style.left = "-200%";
 		$.post(url,{
 			contentType:'application/json',
@@ -193,7 +197,7 @@
 			desc:desc,
 		}).done(function() {
 		window.setTimeout(function() {
-			$(".swipe-left")[0].style.opacity = "0";
+			$(".swipeable")[0].style.opacity = "0";
 			window.setTimeout(function() {
 				window.location.href = "/create/edit";
 			},1000)
@@ -203,9 +207,11 @@
 
     $("#deny").on("tap",function() {
     	var e = event
-    	var par = $(".swipe-left")[0]
-    	par.style.left = "0%";
-    	par.swiped = false;
+    	var par = $(".swipeable")[0]
+    	env.UI.setFrame(par,{
+            x:0,
+            y:0
+        })
     })
     </script>
 </html>

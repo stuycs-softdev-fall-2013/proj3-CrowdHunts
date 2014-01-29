@@ -137,7 +137,7 @@ function TouchManager(tapLength,fingerWidth,swipeSpeed) {
 
 			var adjustment = -360 * (Math.abs(yD)/(yD) - 1)/2 + -180 * (Math.abs(xD)/xD - 1)/2
 			var inst = {
-				angle:180 * Math.atan(yD/xD)/Math.PI + adjustment,
+				angle:180 * Math.atan(yD/xD)/Math.PI - adjustment,
 				distance: {
 					x: xD,
 					y: yD
@@ -168,7 +168,7 @@ function TouchManager(tapLength,fingerWidth,swipeSpeed) {
 			var vY = (touchRecent.screenY - touch2.screenY)/(time - touchRecent.time);
 
 			var inst = {
-				angle:180 * Math.atan2(yD,xD)/Math.PI + 180,
+				angle:-1* (180 * Math.atan2(yD,xD)/Math.PI - 180),
 				distance: {
 					x: xD,
 					y: yD
