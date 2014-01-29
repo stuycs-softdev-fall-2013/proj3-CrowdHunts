@@ -14,7 +14,7 @@ function TouchUI() {
 			context.style.left = -100 * frameNum;
 			openFrame(context,oldFrame,frameNum);
 			return oldFrame;
-		}
+		},
 		openFrame: function(context,frameSource,frameNum) {
 			var frames = $(context).children('.frame[number='+frameNum+']');
 
