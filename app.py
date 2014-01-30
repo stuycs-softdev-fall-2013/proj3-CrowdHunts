@@ -31,6 +31,8 @@ def play():
     require_login()
     return render_template('Game.html')
 
+@app.route('/play/')
+
 @app.route('/create/tour')
 def createToure():
     require_login()

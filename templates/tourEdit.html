@@ -21,10 +21,21 @@
 		text-shadow:2pt 2pt 0px #000000;
 	}
 	.title {
-		font-size:20pt;
+		font-size:30pt;
 		font-style:italic;
 		height:20%;
 	}
+    .desc {
+    	color:#FFFBF6;
+    	font-style:normal;
+		height:70%;
+		
+    	font-style: normal;
+    	font-size:17pt;
+    	margin-top:10pt;
+    	color:#FFFBF6;
+    }
+
 	.body {
 		font-style:normal;
 		height:50%;
@@ -81,7 +92,7 @@
 		margin-bottom:0;
 	}
 	.finish {
-		background-color: #008CFF;
+		background-color: #4355FF;
 		font-style:italic;
 		padding-top:5pt;
 		padding-bottom:5pt;
@@ -92,7 +103,7 @@
 	.finally {
 		display:none;
 		text-shadow:0 0 20pt rgba(150,38,21,1);
-		color:#008CFF;
+		color:#FFFBF6;
 		text-align: center;
 		position:relative;
 	}
@@ -131,10 +142,11 @@
 		font-size:30pt;
 		text-shadow: 0 0 35pt #000000;
 		color:#810036;
-		position:relative;
+		position:absolute;
+		bottom:0;
 	}
 	.choice#confirm {
-		background-color:#008CFF;
+		background-color:#4355FF;
 		transition: .3s top, .3s width, .3s height;
 		color:#FFFBF6;
 
@@ -154,16 +166,6 @@
     	font-style:italic;
     	font-size:40pt;
     	margin-bottom:10pt;
-    }
-    .desc {
-    	color:#FFFBF6;
-    	font-style:normal;
-		height:70%;
-		
-    	font-style: normal;
-    	font-size:15pt;
-    	margin-top:10pt;
-    	color:#FFFBF6;
     }
     .padded {
     	position:absolute;
@@ -268,8 +270,6 @@
     });
     $('#confirm').on("tap",function() {
     	this.style.height = "100%";
-    	this.style.top = "-70%";
-    	this.style.width = "100%";
     	$(this).children('.loading')[0].style.display = "block"
     	$(this).children('.loading')[0].style.opacity = 1
     	submit();
@@ -297,9 +297,7 @@
     var endSubmission = function() {
     	$("#view")[0].style.left = "0";
     	var t = $("#confirm")[0];
-    	t.style.height = "30%";
-    	t.style.top = "0%";
-    	t.style.width = "50%";
+    	t.style.height = "20%";
     	$(t).children('.loading')[0].style.display = "none"
     	$(t).children('.loading')[0].style.opacity = 0
 
@@ -318,7 +316,7 @@
     	var fin = $(".finish")[0];
     	fin.style.width= "100%";
     	fin.style.height = "100%";
-    	fin.style.backgroundColor = "rgba(250,89,65,1)";
+    	fin.style.backgroundColor = "#810036";
     	$(".finally")[0].style.display = "block";
     }
     var submit = function() {

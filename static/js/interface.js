@@ -33,7 +33,15 @@ function TouchUI() {
 			return ans;
 		},
 		openFrame: function(context,frameSource,frameNum) {
-			var frames = $(context).children('.frame[x='+frameNum.x+'][y='+frameNum.y+']');
+			var xSelector = "";
+			var ySelector = "";
+			if(frameNum.x) {
+				xSelector = '[x='+frameNum.x+']';
+			}
+			if(frameNum.y) {
+				ySelector = '[y='+frameNum.y+']';
+			}
+			var frames = $(context).children('.frame'+xSelector+ySelector);
 			frames.map(function(i,elem) {
 				var e = new FrameView(frameSource);
 				frames[i].dispatchEvent(e);
