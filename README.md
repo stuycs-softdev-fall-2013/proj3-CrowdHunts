@@ -8,7 +8,7 @@ Crowdsourced, realworld "quests" using Google Maps and geolocation
 Users mark quests in the real world, which others can then follow.
 
 ##Roles
-- Will 	  : AJAX (server side), quest database
+- Will 	  : AJAX (server side), quest database, Android UI compatibility
 - Yaseen  : User database, create/play interface
 - Hunter  : AJAX, touch, streetview, create/play interface
 - Tak Chi : Login/register interface
