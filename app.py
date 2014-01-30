@@ -20,11 +20,13 @@ def home():
     else:
         return render_template('home.html')
 
+"""
 # not very fun. we won't mention it, but we'll leave it there in case anyone's interested
 @app.route('/leaderboard')
 def leaders():
     leaders = db.users_by_score()
     return render_template('leaderboard.html', leaders=leaders)
+"""
 
 @app.route('/play')
 def play():
