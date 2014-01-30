@@ -1,16 +1,15 @@
 {% extends "base.html" %}
 {% block title %}Login{% endblock title %}
 {% block content %}
-  <br>
+    <h1>Login</h1>
     {% if error %}
       <div class="panel alert">{{error}}</div>
     {% endif %}
-    <h1>Login</h1>
-
     <form  role="form" method="POST">
-      <input type="text" name="usern" class="form-control" placeholder="Username"/>
-      <input type="password" name="passw" class="form-control" placeholder="Password"/>
-
+      <input type="text" name="usern" class="form-control"
+	     placeholder="Username"/>
+      <input type="password" name="passw" class="form-control"
+	     placeholder="Password"/>
       <input type="submit" name="button" class="button" value="Login"/>
       <div class="panel">
 	Don't have an account? <a href="/register">Register here</a>
