@@ -12,8 +12,8 @@ function TouchUI() {
 		angleError:10,
 		setFrame: function(context,frameNum) {
 			var oldFrame = this.getFrame(context);
-			context.setAttribute("x",frameNum.x);
-			context.setAttribute("y",frameNum.y);
+			context.setAttribute("xFrame",frameNum.x);
+			context.setAttribute("yFrame",frameNum.y);
 			context.style.left = -100 * frameNum.x + "%";
 			context.style.top = -100 * frameNum.y + "%";
 
@@ -25,8 +25,8 @@ function TouchUI() {
 
 		},
 		getFrame: function(context) {
-			var x = parseInt(context.getAttribute("x"));
-			var y = parseInt(context.getAttribute("y"));
+			var x = parseInt(context.getAttribute("xFrame"));
+			var y = parseInt(context.getAttribute("yFrame"));
 			if(isNaN(x)) x = 0;
 			if(isNaN(y)) y = 0;
 			var ans = {x:x,y:y}

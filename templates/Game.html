@@ -84,13 +84,24 @@
 	.options {
 		position:absolute;
 		top:0;
+		bottom:0;
 		left:0;
 		right:0;
+		margin:20pt;
+		width:auto;
+		color:#FFFBF6;
+	}
+	.expanded {
+		position:absolute;
+		top:0;
 		bottom:0;
 		height:auto;
 		width:auto;
 		margin:20pt;
 		color:#FFFBF6;
+	}
+	.left {
+		transition:.3s left;
 	}
 	</style>
 	</head>
@@ -110,12 +121,24 @@
 				</div>
 				</div>
 			</div>
-			<div class="frame tours" x=0 y=1>
-				<div class="options">
-					<div class="tour">
-						test
+			<div class="frame tours" x=0 y=1 >
+				<div class="swipeable left right" id="selector">
+					<div class="scrollable frame options" x=0>
+						<div class="tour">
+							test
+						</div>
+						<hr />
+						
 					</div>
-					<hr />
+					<div class="frame expanded" x=1 >
+						<div class="tour">
+							<div id="title">
+							</div>
+							<hr />
+							<div id="desc">
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -133,22 +156,72 @@
 	    <script src="../static/js/interface.js"></script>
 	    <script src="../static/js/streetView.js"></script>
 	    <script>
-	    $(document).on("envready",function() {
-	    	console.log("test");
-	    	getQuests(function(d) {
-	    		console.log(d);
-	    	})
+	    function expandQuest(q) {
+	    		console.log("expand to:")
+	    		console.log(q);
+	    		return function() {
+
+	    			$("#selector").map(function(i,elem) {
+	    				env.UI.setFrame(elem,{x:1,y:0});
+	    			})
+	    			$("#title").map(function() {
+	    				this.innerHTML = q.title;
+	    			})
+	    			$("#desc").map(function() {
+	    				this.innerHTML = q.desc;
+	    			})
+	    		}
+	    	}
+	    	function clearQuests() {
+	    		$(".options").empty();
+	    		$("#title").empty();
+	    		$("#desc").empty();
+	    	}
+	    	function newQuests(q) {
+	    		clearQuests();
+	    		console.log(q.results);
+	    		q.results.map(function(el) {
+	    			addQuest(el);
+	    		})
+	    	}
+	    	function addQuest(q) {
+	    		$(".options").map(function(i,elem) {
+	    			var div = document.createElement("div")
+	    			div.style.className = "quest"
+	    			var title = document.createElement("span")
+	    			title.className = "title"
+	    			title.innerHTML = q.title;
+	    			div.appendChild(title);
+	    			$(div).on("tap",expandQuest(q));
+	    			this.appendChild(div);
+	    		})
+	    	}
+	    	function debug() {
+	    		var a = {
+	    			title:"hunter",
+	    			desc:"wins"
+	    		}
+	    		var b = {
+	    			title:"b",
+	    			desc: "loses"
+	    		}
+	    		var c = {
+	    			results:[a,b]
+	    		}
+	    		return c;
+	    	}
+	    	
 		    function getQuests(callback) {
 		    	var panoid = env.streetView.pano.getPano();
-		    	console.log(panoid);
 		    	var url = "/jax/getquest"
-		    	$.get(url,{panoid:panoid}).done(callback);
+		    	$.get(url,{panoid:panoid}).done(function(d){
+		    		callback(d)
+		    	});
 		    }
+	    $(document).on("envready",function() {
+	    	getQuests(newQuests)
 		    $(document).on("locationchange",function() {
-		    	console.log("dsfd")
-		    	getQuests(function(d) {
-		    		console.log(d);
-		    	})
+		    	getQuests(newQuests);
 		    })
 
 	    })
