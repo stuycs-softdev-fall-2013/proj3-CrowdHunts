@@ -31,7 +31,10 @@ def play():
     require_login()
     return render_template('Game.html')
 
-@app.route('/play/')
+@app.route('/play/<questNum>')
+def quest(questNum):
+    require_login()
+    return render_template('quest.html',questNum=questNum)
 
 @app.route('/create/tour')
 def createToure():
@@ -90,7 +93,7 @@ def stop():
 # /jax/getquest?panoid=abcd
 # returns [(usern, title, desc, questid)]
 @app.route('/jax/getquest')
-def quest():
+def getQuest():
     panoid = request.args.get('panoid')
     res = db.get_quests_at_pano(panoid)
     ret = {'results':[{'usern':q[0], 'title':q[1], 'desc':q[2], 'num_stops':q[3], 'questid':q[4]} for q in res]}
