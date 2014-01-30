@@ -1,0 +1,149 @@
+<html>
+	<head>
+		<meta name="viewport" content="user-scalable=1.0,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="format-detection" content="telephone=no">
+	    <link href="../static/css/main.css" rel="stylesheet">
+        <style>
+        .swipeable {
+            position:absolute;
+        }
+        .frame {
+            width:100%;
+            height:100%;
+            position:absolute;
+            left:0;
+            top:0;
+            bottom:0;
+            right:0;
+        }
+        .up {
+            transition: .3s top;
+        }
+        .info {
+            width:auto;
+            height:10%;
+            position:absolute;
+            top:0;
+            left:0;
+            right:0;
+            bottom:0;
+            background-color:#2B004A;
+            color:#FFFBF6;
+            text-align: center;
+            transition:.3s height;
+            opacity:.95;
+        }
+        .info[expanded=true] {
+            height:100%;
+        }
+        .padded {
+            position:absolute;
+            top:0;
+            left:0;
+            right:0;
+            bottom:0;
+            margin:10pt;
+            transition:.3s margin;
+        }
+        .padded[expanded=true] {
+            margin:20pt;
+        }
+        .title {
+            font-style:italic;
+        }
+        .desc {
+            font-style:normal;
+            text-align: left;
+        }
+        .expanded {
+            opacity:0;
+            transition:.5s opacity;
+        }
+        .expanded[expanded=true] {
+            opacity:1;
+        }
+        </style>
+    </head>
+    <body>
+        <div class="frame" expanded>
+            <div class="info" expanded>
+                <div class="padded" expanded>
+                    <div class="title" expanded>
+                        <span class="vCentered" id="title"expanded>
+                            title
+                        </span> 
+                    </div>
+                    <div class="expanded" expanded>
+                        <hr />
+                        <div class="scrollable desc" id="desc" expanded>
+                        Booola ka sha
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    	
+
+		<div class="container">
+			<div id="main"></div>
+		</div>
+    </body>
+
+	<script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDP6aoULMAMJg1uSocCFiNg9rhMiUHyui4&sensor=false">
+    </script>
+    <script src="../static/js/jquery-2.1.0.min.js"></script>
+    <script src="../static/js/main.js"></script>
+    <script src="../static/js/phone.js"></script>
+    <script src="../static/js/interface.js"></script>
+	<script src="../static/js/touch.js"></script>
+    <script src="../static/js/streetView.js"></script>
+    <script>
+    var questNum = {{questNum}};
+    var curIndex = 0;
+    var nextStop = {};
+    console.log(questNum);
+
+
+    function expand(val) {
+        $("[expanded]").map(function() {
+            this.setAttribute("expanded",val);
+        })
+    }
+    function setStop(d) {
+        $("#title").map(function() {
+            this.innerHTML = d.title
+        })
+        $("#desc").map(function() {
+            this.innerHTML = d.desc
+        })
+        curIndex = parseInt(d.index);
+    }
+    function getStop(s,q,callback) {
+        var url="/jax/getstop"
+        var data = {
+            index:s,
+            qid:q
+        }
+        $.get(url,data).done(callback)
+    }
+    $(document).ready(expand(false));
+    $(document).on("envready",function() {
+    	$(".frame").on("swipe",function() {
+            var dir = env.UI.getDir(event.detail.instantaneous.angle,30)/*env.UI.angleError);*/
+            console.log(dir);
+            if(dir.dir == "down") {
+                expand(true);
+            } else if(dir.dir == "up") {
+                expand(false);
+            }
+        })
+
+
+
+    })
+
+    </script>
+</html>
