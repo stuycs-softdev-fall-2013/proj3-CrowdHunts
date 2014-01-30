@@ -184,6 +184,7 @@
 								<hr />
 								<div id="desc" class="desc">
 								</div>
+								<input type="hidden" id="questNum"></input>
 							</div>
 						</div>
 						<div class="choice" id="confirm">
@@ -213,10 +214,12 @@
 	    	this.style.height = "100%";
 	    	$(this).children('.loading')[0].style.display = "block"
 			$(this).children('.loading')[0].style.opacity = 1
-			submit();
+			setTimeout(submit,300);
 	    })
 	    function submit() {
-
+	    	var questNum = $("#questNum")[0].value;
+	    	var uri = "/play/" + questNum;
+	    	window.location.href = uri;
 	    }
 	    function expandQuest(q) {
     		console.log("expand to:")
@@ -234,6 +237,9 @@
     			})
     			$("#desc").map(function() {
     				this.innerHTML = q.desc;
+    			})
+    			$("#questNum").map(function() {
+    				this.value = q.questid;
     			})
     		}
     	}

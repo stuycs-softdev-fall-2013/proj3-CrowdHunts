@@ -78,6 +78,8 @@ def stop():
     index = request.args.get('index')
     qid = request.args.get('questid')
     stop = db.get_stop(qid, index)
+    print stop
+    print stop[0]
     ret = {'title':stop[0][0],
            'desc':stop[0][1],
            'lat':stop[0][2],
@@ -86,7 +88,7 @@ def stop():
            'questid':stop[0][5],
            'index':stop[0][6],
            'isfinal':stop[1]
-    } if stop[0] else {'error':'index out of bounds'}
+    } #if stop[0] else {'error':'index out of bounds'}
     return jsonify(**ret)
 
 # quest retrieval
