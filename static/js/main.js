@@ -9,6 +9,7 @@ function main(p) {
 	}
 	sv.initStreetView(p.coords.latitude,p.coords.longitude);
 	sv.setPov(0,0,0);
+    if (!isMobile.Android())
 	sv.enableOrientationControls();
 	tM = new TouchManager(150,20,.75);
 	tM.init();
