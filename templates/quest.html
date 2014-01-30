@@ -63,6 +63,22 @@
         .expanded[expanded=true] {
             opacity:1;
         }
+        .finish {
+            position:absolute;
+            width:80%;
+            height:8%;
+            opacity:0;
+            left:0;
+            bottom:0;
+            right:0;
+            background-color:#810036;
+            transition:.3s opacity,.3s width,.3s height;
+        }
+        .finish[finish=true] {
+            opacity:1;
+            width:100%;
+            height:10%;
+        }
         </style>
     </head>
     <body>
@@ -79,7 +95,11 @@
                         <div class="scrollable desc" id="desc" expanded>
                         Booola ka sha
                         </div>
+                        <div class="finish" id="finish">
+                        You made it!
+                        </div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -102,7 +122,7 @@
     <script src="../static/js/streetView.js"></script>
     <script>
     var questNum = {{questNum}};
-    var curIndex = 0;
+    var curIndex = -1;
     var nextStop = {};
     console.log(questNum);
 
@@ -119,17 +139,37 @@
         $("#desc").map(function() {
             this.innerHTML = d.desc
         })
-        curIndex = parseInt(d.index);
+        $("#finish").map(function(){
+            console.log(d.isfinal);
+            this.setAttribute("finish",d.isfinal)
+        })
     }
-    function getStop(s,q,callback) {
+    function getStop(s,callback) {
         var url="/jax/getstop"
         var data = {
             index:s,
-            qid:q
+            questid:questNum
         }
         $.get(url,data).done(callback)
     }
-    $(document).ready(expand(false));
+    function next(callback) {
+        curIndex++;
+        setStop(nextStop);
+        getStop(curIndex,function(d) {
+            nextStop = d;
+            if(callback) {
+                callback(d);
+            }
+        })
+    }
+    $(document).ready(function() {
+        expand(false)
+        next(function(d) {
+            console.log(d);
+            setStop(d);
+        });
+    });
+    $(".expanded").on("tap",next);
     $(document).on("envready",function() {
     	$(".frame").on("swipe",function() {
             var dir = env.UI.getDir(event.detail.instantaneous.angle,30)/*env.UI.angleError);*/
@@ -142,8 +182,8 @@
         })
 
 
-
     })
+    $(document).on("locationchange")
 
     </script>
 </html>

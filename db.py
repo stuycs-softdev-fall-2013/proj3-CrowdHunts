@@ -136,12 +136,12 @@ def get_users_quests(usern):
 def get_stop(qid, index):
     conn = sql.connect(DB_NAME) 
     c = conn.cursor()
-    c.execute("SELECT * FROM stops WHERE questid=? AND indx=?", (qid, index))
+    c.execute("SELECT * FROM stops WHERE questid=? AND indx=?", (int(qid), int(index)))
     ret = c.fetchone()
-    c.execute("SELECT num_stops FROM quests WHERE questid=?", (qid,))
+    c.execute("SELECT num_stops FROM quests WHERE questid=?", (int(qid),))
     l = c.fetchone()
     conn.close()
-    return (ret, l >= int(index) + 1)
+    return (ret, l >= int(index) + 1,l,qid,index)
 
 def add_quest(stops, meta, usern):
     conn = sql.connect(DB_NAME)

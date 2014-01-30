@@ -90,7 +90,7 @@ def stop():
            'questid':stop[0][5],
            'index':stop[0][6],
            'isfinal':stop[1]
-    } #if stop[0] else {'error':'index out of bounds'}
+    } if stop[0] else {'error':'index out of bounds'}
     return jsonify(**ret)
 
 # quest retrieval
