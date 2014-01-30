@@ -141,7 +141,7 @@ def get_stop(qid, index):
     c.execute("SELECT num_stops FROM quests WHERE questid=?", (int(qid),))
     l = c.fetchone()
     conn.close()
-    return (ret, l <= int(index) + 1)
+    return (ret,int(index) + 1 >= l[0])
 
 def add_quest(stops, meta, usern):
     conn = sql.connect(DB_NAME)

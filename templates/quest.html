@@ -42,7 +42,7 @@
             top:0;
             left:0;
             right:0;
-            bottom:0;
+            bottom:10%;
             margin:10pt;
             transition:.3s margin;
         }
@@ -55,6 +55,11 @@
         .desc {
             font-style:normal;
             text-align: left;
+            position:absolute;
+            left:0;
+            bottom:0;
+            right:0;
+            top:0;
         }
         .expanded {
             opacity:0;
@@ -65,23 +70,67 @@
         }
         .finish {
             position:absolute;
-            width:80%;
-            height:8%;
             opacity:0;
             left:0;
             bottom:0;
             right:0;
+            top:0;
+            height:auto;
+            width:auto;
+            margin:5pt;
             background-color:#810036;
-            transition:.3s opacity,.3s width,.3s height;
+            transition:.3s opacity,.3s margin;
+        }
+        .finish[expanded=true] {
+            bottom:0;
         }
         .finish[finish=true] {
+            margin:0pt;
+        }
+        .finish[finish=true][expanded=true] {
             opacity:1;
-            width:100%;
+        }
+        .fAnimator {
+            position:absolute;
             height:10%;
+            bottom:0;
+            left:0;
+            right:0;
+        }
+        .temp {
+            position:absolute;
+            left:0;
+            right:0;
+            bottom:0;
+            top:15%;
+        }
+        .victory {
+            font-size:40pt;
+            background-color:#810036;
+            color:#FFFBF6;
+            width:100%;
+            text-align:center;
+            height:80%;
+            position:absolute;
+            top:-80%;
+            transition:.5s top;
+        }
+        inset {
+            position:absolute;
+            left:0;
+            top:0;
+            right:0;
+            bottom:0;
+            margin:20pt;
         }
         </style>
     </head>
     <body>
+        <div class="victory">
+            <div class="inset">
+                (y)
+            </div>
+        </div>
         <div class="frame" expanded>
             <div class="info" expanded>
                 <div class="padded" expanded>
@@ -92,15 +141,19 @@
                     </div>
                     <div class="expanded" expanded>
                         <hr />
-                        <div class="scrollable desc" id="desc" expanded>
-                        Booola ka sha
-                        </div>
-                        <div class="finish" id="finish">
-                        You made it!
+                        <div class="temp"> 
+                            <div class="scrollable desc" id="desc" expanded>
+                            </div>
                         </div>
                     </div>
 
                 </div>
+                <div class="fAnimator">
+                    <div class="finish" id="finish" expanded>
+                        <span class="vCentered" id="finishVC">You made it!</span>
+                    </div>
+                </div>
+
             </div>
         </div>
 
@@ -125,11 +178,12 @@
     var curIndex = -1;
     var nextStop = {};
     console.log(questNum);
-
+    var reqs = [];
 
     function expand(val) {
         $("[expanded]").map(function() {
             this.setAttribute("expanded",val);
+
         })
     }
     function setStop(d) {
@@ -142,6 +196,12 @@
         $("#finish").map(function(){
             console.log(d.isfinal);
             this.setAttribute("finish",d.isfinal)
+            if(d.isfinal) {
+                $("#finishVC").map(function() {
+                    this.style.lineHeight = .1 * $(document).height() + "px"
+                    console.log(this.style.lineHeight);
+                })
+            }
         })
     }
     function getStop(s,callback) {
@@ -157,9 +217,20 @@
         setStop(nextStop);
         getStop(curIndex,function(d) {
             nextStop = d;
+            reqs.push(d)
+
             if(callback) {
                 callback(d);
             }
+
+        })
+
+    }
+    function finish() {
+        var uri="/jax/finishquest"
+        $(".victory")[0].style.top = "0%";
+        $.get(uri,{
+            questid:questNum
         })
     }
     $(document).ready(function() {
@@ -170,9 +241,10 @@
         });
     });
     $(".expanded").on("tap",next);
+    $("#finish").on("tap",finish);
     $(document).on("envready",function() {
     	$(".frame").on("swipe",function() {
-            var dir = env.UI.getDir(event.detail.instantaneous.angle,30)/*env.UI.angleError);*/
+            var dir = env.UI.getDir(event.detail.instantaneous.angle,env.UI.angleError)/*);*/
             console.log(dir);
             if(dir.dir == "down") {
                 expand(true);
@@ -180,10 +252,14 @@
                 expand(false);
             }
         })
-
+        $(document).on("locationchange",function() {
+            if(env.streetView.pano.getPano() == nextStop.panoid) {
+                next();
+            }
+        })
 
     })
-    $(document).on("locationchange")
+
 
     </script>
 </html>

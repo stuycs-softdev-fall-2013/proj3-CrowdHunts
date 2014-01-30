@@ -9,7 +9,7 @@ function TouchUI() {
 		})
 	}
 	var UI = {
-		angleError:10,
+		angleError:20,
 		setFrame: function(context,frameNum) {
 			var oldFrame = this.getFrame(context);
 			context.setAttribute("xFrame",frameNum.x);
